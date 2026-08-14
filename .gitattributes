@@ -1,0 +1,20 @@
+# Set default behavior: normalize text files to LF in Git
+* text=auto eol=lf
+
+# Optional: Ensure common text files always use LF
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.svg text eol=lf
+*.md text eol=lf
+
+# Ensure binary files are never modified
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
