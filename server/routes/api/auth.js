@@ -1,0 +1,13 @@
+/**
+ * routes/api/auth.js
+ * Aligned with 'Web Development with Node and Express' (Ethan Brown)
+ */
+
+const express = require('express');
+const router = express.Router();
+const handlers = require('../../handlers/authHandlers');
+
+router.post('/login', handlers.login);
+router.post('/register', handlers.register);
+
+module.exports = router;

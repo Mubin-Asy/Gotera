@@ -1,0 +1,278 @@
+/**
+ * auth.css
+ * Aligned with 'CSS in Depth' (Keith J. Grant)
+ * Faithful visual styling for Gotera Sign In & Create Account views
+ */
+
+.auth-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  background-color: #072a20;
+}
+
+.auth-hero-pane {
+  flex: 1;
+  background: 
+    linear-gradient(135deg, rgba(8, 42, 32, 0.88), rgba(13, 56, 44, 0.95)),
+    radial-gradient(ellipse at bottom left, #145a46, #072a20);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3.5rem 4rem;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Farm field and silo vector graphic using pure CSS SVG background */
+.auth-hero-pane::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48%;
+  background-image: radial-gradient(circle at 50% 120%, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.auth-hero-top {
+  position: relative;
+  z-index: 2;
+}
+
+.auth-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 3.5rem;
+}
+
+.auth-brand-logo .brand-emblem {
+  width: 44px;
+  height: 44px;
+}
+
+.auth-brand-logo .brand-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.auth-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 460px;
+}
+
+.auth-hero-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 1rem;
+}
+
+.auth-hero-desc {
+  font-size: 1rem;
+  color: #a7c5b9;
+  line-height: 1.6;
+}
+
+.auth-hero-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  position: relative;
+  z-index: 2;
+  color: #a7c5b9;
+  font-size: 0.875rem;
+}
+
+.auth-hero-leaf-icon {
+  color: #34d399;
+}
+
+/* Form Container Pane */
+.auth-form-pane {
+  flex: 1;
+  max-width: 580px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  background-color: #0d382c;
+}
+
+.auth-card {
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.auth-card-header {
+  margin-bottom: 1.75rem;
+}
+
+.auth-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 0.35rem;
+}
+
+.auth-card-subtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.input-icon-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon-group .field-icon {
+  position: absolute;
+  left: 0.85rem;
+  width: 17px;
+  height: 17px;
+  color: #059669;
+  pointer-events: none;
+}
+
+.input-icon-group .auth-input {
+  width: 100%;
+  padding: 0.65rem 0.85rem 0.65rem 2.6rem;
+  background-color: #f9fbf9;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 0.84rem;
+  color: var(--color-text-main);
+  transition: all var(--transition-fast);
+}
+
+.input-icon-group .auth-input:focus {
+  background-color: #ffffff;
+  border-color: var(--color-brand-emerald);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+  outline: none;
+}
+
+.input-icon-group .password-toggle-btn {
+  position: absolute;
+  right: 0.75rem;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+}
+
+.input-icon-group .password-toggle-btn:hover {
+  color: var(--color-text-main);
+}
+
+.auth-checkbox-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.5rem 0 1rem 0;
+  font-size: 0.8125rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  accent-color: var(--color-brand-emerald);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.auth-forgot-link {
+  color: #059669;
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.auth-forgot-link:hover {
+  text-decoration: underline;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  background-color: #00a86b;
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 168, 107, 0.25);
+  transition: all var(--transition-fast);
+}
+
+.auth-submit-btn:hover {
+  background-color: #008f5b;
+  box-shadow: 0 6px 14px rgba(0, 168, 107, 0.35);
+}
+
+.auth-switch-prompt {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  margin-top: 1.5rem;
+}
+
+.auth-switch-link {
+  color: #059669;
+  font-weight: 600;
+  margin-left: 0.25rem;
+  cursor: pointer;
+}
+
+.auth-switch-link:hover {
+  text-decoration: underline;
+}
+
+.back-to-app-btn {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 10;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.7875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background var(--transition-fast);
+}
+
+.back-to-app-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 900px) {
+  .auth-wrapper {
+    flex-direction: column;
+  }
+  .auth-hero-pane {
+    padding: 2.5rem 1.5rem;
+  }
+  .auth-form-pane {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+}
