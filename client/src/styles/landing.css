@@ -1,0 +1,503 @@
+/**
+ * landing.css
+ * Styles for Gotera Landing / Home Page
+ * Matching the exact visual aesthetic of the attached design:
+ * - Curved emerald hero banner with grain warehouse imagery
+ * - 4 Quick access feature cards
+ * - Food Reserve Overview stats
+ * - Deep teal branding and footer
+ */
+
+.landing-page {
+  min-height: 100vh;
+  background-color: #f7faf8;
+  color: #141e1a;
+  font-family: var(--font-sans, 'Inter', -apple-system, sans-serif);
+  display: flex;
+  flex-direction: column;
+}
+
+/* 1. Header / Navigation Bar */
+.landing-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 2.5rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #edf2ee;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.landing-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.landing-brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-brand-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #0b3b2f;
+}
+
+.landing-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.landing-nav-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4a5568;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 0.2rem;
+  position: relative;
+  transition: color 0.15s ease;
+  text-decoration: none;
+}
+
+.landing-nav-link:hover {
+  color: #0d8a56;
+}
+
+.landing-nav-link.active {
+  color: #0b3b2f;
+  font-weight: 600;
+}
+
+.landing-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background-color: #00875a;
+  border-radius: 9999px;
+}
+
+.landing-auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.landing-btn-outline {
+  border: 1.5px solid #00875a;
+  background-color: #ffffff;
+  color: #00875a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1.45rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.landing-btn-outline:hover {
+  background-color: #f0fdf4;
+  border-color: #059669;
+}
+
+.landing-btn-solid {
+  background-color: #00875a;
+  border: 1.5px solid #00875a;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1.45rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.landing-btn-solid:hover {
+  background-color: #046c48;
+  border-color: #046c48;
+}
+
+/* 2. Main Content Container */
+.landing-main {
+  flex: 1;
+  max-width: 1220px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 3rem 2rem;
+}
+
+/* 3. Hero Banner */
+.landing-hero-card {
+  position: relative;
+  background: #094738;
+  border-radius: 28px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  box-shadow: 0 10px 30px rgba(9, 71, 56, 0.15);
+  margin-bottom: 2.5rem;
+  min-height: 380px;
+}
+
+.landing-hero-content {
+  background: linear-gradient(135deg, #064032 0%, #0d6951 55%, #0e7b5f 100%);
+  padding: 3.5rem 3.5rem 3.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 2;
+  position: relative;
+}
+
+.hero-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.hero-drop-emblem {
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 12px rgba(0, 230, 153, 0.35));
+}
+
+.hero-title {
+  color: #ffffff;
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.hero-subtitle {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 2.25rem;
+  max-width: 440px;
+}
+
+.hero-signin-btn {
+  background-color: #00c48c;
+  color: #ffffff;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.75rem 2.5rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0, 196, 140, 0.4);
+}
+
+.hero-signin-btn:hover {
+  background-color: #00b07d;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 196, 140, 0.5);
+}
+
+.landing-hero-visual {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  min-height: 380px;
+}
+
+.landing-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Organic curve dividing the hero green background and the image */
+.hero-curve-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 80px;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* 4. Quick Feature Cards */
+.landing-features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.feature-card {
+  background: #ffffff;
+  border: 1px solid #eef2ef;
+  border-radius: 18px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  cursor: pointer;
+  text-align: left;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(11, 59, 47, 0.08);
+  border-color: #c7e8da;
+}
+
+.feature-icon-badge {
+  width: 48px;
+  height: 48px;
+  background-color: #d8f3e5;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00875a;
+  margin-bottom: 1.15rem;
+  transition: transform 0.2s ease;
+}
+
+.feature-card:hover .feature-icon-badge {
+  transform: scale(1.05);
+}
+
+.feature-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 0.35rem;
+}
+
+.feature-card-desc {
+  font-size: 0.8125rem;
+  color: #718096;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* 5. Food Reserve Overview Section */
+.reserve-overview-section {
+  margin-bottom: 3rem;
+}
+
+.overview-heading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 1.25rem;
+}
+
+.overview-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.overview-metric-card {
+  background: #ffffff;
+  border: 1px solid #edf2ee;
+  border-radius: 18px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.overview-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.overview-icon-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.overview-icon-wheat {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.overview-icon-rice {
+  background-color: #d1fae5;
+  color: #059669;
+}
+
+.overview-icon-maize {
+  background-color: #ffedd5;
+  color: #ea580c;
+}
+
+.overview-icon-other {
+  background-color: #f2ebe4;
+  color: #8c6a51;
+}
+
+.overview-metric-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.overview-metric-value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1a202c;
+  line-height: 1.2;
+}
+
+.overview-metric-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 0.2rem;
+  font-weight: 500;
+}
+
+/* 6. Footer */
+.landing-footer {
+  background-color: #064032;
+  color: #ffffff;
+  padding: 1.5rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.footer-brand-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.footer-link {
+  color: #e2e8f0;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: color 0.15s ease;
+  padding: 0;
+}
+
+.footer-link:hover {
+  color: #34d399;
+}
+
+.footer-divider {
+  width: 1px;
+  height: 18px;
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.footer-copyright {
+  color: #94a3b8;
+  font-size: 0.8125rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .landing-hero-card {
+    grid-template-columns: 1fr;
+  }
+  .landing-hero-visual {
+    min-height: 260px;
+  }
+  .landing-features-grid,
+  .overview-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-navbar {
+    padding: 0.75rem 1rem;
+  }
+  .landing-nav-links {
+    display: none;
+  }
+  .landing-main {
+    padding: 1rem;
+  }
+  .landing-hero-content {
+    padding: 2rem 1.5rem;
+  }
+  .hero-title {
+    font-size: 2rem;
+  }
+  .hero-subtitle {
+    font-size: 1.15rem;
+  }
+  .landing-features-grid,
+  .overview-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .landing-footer {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  .footer-right {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .footer-divider {
+    display: none;
+  }
+}

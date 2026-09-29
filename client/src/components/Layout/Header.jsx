@@ -5,9 +5,16 @@
  */
 
 import React from 'react';
-import { Search, Bell, ChevronDown, LogIn } from 'lucide-react';
+import { Search, Bell, ChevronDown, LogOut, Home } from 'lucide-react';
 
-export default function Header({ activeTab, currentUser, onOpenAuth, searchQuery, onSearchChange }) {
+export default function Header({
+  activeTab,
+  currentUser,
+  onNavigateHome,
+  onLogout,
+  searchQuery,
+  onSearchChange
+}) {
   const getTitles = () => {
     switch (activeTab) {
       case 'inventory':
@@ -76,44 +83,42 @@ export default function Header({ activeTab, currentUser, onOpenAuth, searchQuery
           />
         </div>
 
-        {/* Notification Bell */}
-        <button
-          type="button"
-          className="header-icon-btn"
-          aria-label="Notifications (1 unread message)"
-          title="Notifications"
-        >
-          <Bell size={16} aria-hidden="true" />
-          <span className="notification-dot" aria-hidden="true"></span>
-        </button>
-
-        {/* Demo Switcher for Login/Register Screens */}
+        {/* Home / Public Portal Button */}
         <button
           type="button"
           className="btn btn-outline"
-          onClick={onOpenAuth}
-          style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem' }}
-          title="Switch to Sign In / Create Account Views"
+          onClick={onNavigateHome}
+          style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+          title="Return to Public Landing Page"
         >
-          <LogIn size={14} />
-          <span>Sign In View</span>
+          <Home size={14} />
+          <span>Home Portal</span>
+        </button>
+
+        {/* Sign Out Button */}
+        <button
+          type="button"
+          className="btn btn-outline"
+          onClick={onLogout}
+          style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#c53030', borderColor: '#feb2b2' }}
+          title="Sign Out of GOTERA System"
+        >
+          <LogOut size={14} />
+          <span>Sign Out</span>
         </button>
 
         {/* Profile Chip */}
         <div
           className="header-profile-badge"
-          onClick={onOpenAuth}
-          role="button"
-          tabIndex={0}
-          aria-label="User profile options"
+          title={`${currentUser?.fullName} (${currentUser?.role})`}
         >
           <div className="header-profile-avatar" aria-hidden="true">
             {currentUser?.avatar || 'MK'}
           </div>
-          <span className="header-profile-name">{currentUser?.fullName || 'Meron Kassa'}</span>
-          <ChevronDown size={14} style={{ color: 'var(--color-text-muted)' }} />
+          <span className="header-profile-name">{currentUser?.fullName || 'User'}</span>
         </div>
       </div>
     </header>
   );
 }
+

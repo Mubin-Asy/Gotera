@@ -8,13 +8,25 @@
 import React, { useState } from 'react';
 import { User, Lock, Eye, EyeOff, ArrowLeft, Leaf } from 'lucide-react';
 
-export default function SignIn({ onLogin, onSwitchToRegister, onBackToApp }) {
+export default function SignIn({ onLogin, onSwitchToRegister, onBackToHome }) {
   const [email, setEmail] = useState('meron.kassa@gotera.gov.et');
   const [password, setPassword] = useState('Password123!');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const demoAccounts = [
+    { label: 'Warehouse Manager', email: 'meron.kassa@gotera.gov.et', pass: 'Password123!' },
+    { label: 'Administrator', email: 'admin@gotera.gov.et', pass: 'Admin123!' },
+    { label: 'Relief Coordinator', email: 'coordinator@gotera.gov.et', pass: 'Coordinator123!' },
+  ];
+
+  const handleSelectDemo = (acc) => {
+    setEmail(acc.email);
+    setPassword(acc.pass);
+    setErrorMessage('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +40,7 @@ export default function SignIn({ onLogin, onSwitchToRegister, onBackToApp }) {
     try {
       await onLogin({ email, password });
     } catch (err) {
-      setErrorMessage(err.message || 'Login failed. Please verify credentials.');
+      setErrorMessage(err.message || 'Login failed. Please verify your credentials.');
     } finally {
       setIsLoading(false);
     }
@@ -39,11 +51,11 @@ export default function SignIn({ onLogin, onSwitchToRegister, onBackToApp }) {
       <button
         type="button"
         className="back-to-app-btn"
-        onClick={onBackToApp}
-        aria-label="Back to System Dashboard"
+        onClick={onBackToHome}
+        aria-label="Back to Home Page"
       >
         <ArrowLeft size={16} />
-        <span>Back to System</span>
+        <span>Back to Home</span>
       </button>
 
       {/* Left Hero Pane with Agricultural Aesthetic */}
@@ -88,7 +100,35 @@ export default function SignIn({ onLogin, onSwitchToRegister, onBackToApp }) {
 
           <div className="auth-card-header" style={{ textAlign: 'center' }}>
             <h2 className="auth-card-title">Welcome Back</h2>
-            <p className="auth-card-subtitle">Sign in to your account to continue</p>
+            <p className="auth-card-subtitle">Sign in to your account to access the system</p>
+          </div>
+
+          {/* Quick Demo Credentials Pill Bar for Presentation */}
+          <div style={{ marginBottom: '1.25rem', padding: '0.65rem 0.75rem', background: '#f0fdf4', borderRadius: '10px', border: '1px solid #bbf7d0' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#166534', marginBottom: '0.4rem' }}>
+              Demo Accounts (Click to Fill):
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+              {demoAccounts.map((acc) => (
+                <button
+                  key={acc.label}
+                  type="button"
+                  onClick={() => handleSelectDemo(acc)}
+                  style={{
+                    fontSize: '0.7rem',
+                    padding: '0.25rem 0.55rem',
+                    background: email === acc.email ? '#047857' : '#ffffff',
+                    color: email === acc.email ? '#ffffff' : '#047857',
+                    border: '1px solid #047857',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontWeight: '600'
+                  }}
+                >
+                  {acc.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {errorMessage && (
@@ -154,7 +194,7 @@ export default function SignIn({ onLogin, onSwitchToRegister, onBackToApp }) {
                 />
                 <span>Remember me</span>
               </label>
-              <a href="#forgot" className="auth-forgot-link" onClick={(e) => { e.preventDefault(); alert('In production, password reset instructions are dispatched via SMS/Email.'); }}>
+              <a href="#forgot" className="auth-forgot-link" onClick={(e) => { e.preventDefault(); alert('Password reset instructions dispatched to your official agency email.'); }}>
                 Forgot password?
               </a>
             </div>
@@ -185,3 +225,4 @@ export default function SignIn({ onLogin, onSwitchToRegister, onBackToApp }) {
     </div>
   );
 }
+

@@ -8,7 +8,7 @@
 import React, { useState } from 'react';
 import { User, Mail, Phone, Building2, Briefcase, Lock, ArrowLeft, Leaf } from 'lucide-react';
 
-export default function CreateAccount({ onRegister, onSwitchToLogin, onBackToApp }) {
+export default function CreateAccount({ onRegister, onSwitchToLogin, onBackToHome }) {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -64,11 +64,11 @@ export default function CreateAccount({ onRegister, onSwitchToLogin, onBackToApp
       <button
         type="button"
         className="back-to-app-btn"
-        onClick={onBackToApp}
-        aria-label="Back to System Dashboard"
+        onClick={onBackToHome}
+        aria-label="Back to Home Page"
       >
         <ArrowLeft size={16} />
-        <span>Back to System</span>
+        <span>Back to Home</span>
       </button>
 
       {/* Left Hero Pane with Agricultural Aesthetic */}
