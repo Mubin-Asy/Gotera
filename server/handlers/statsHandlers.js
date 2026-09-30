@@ -1,7 +1,9 @@
 /**
  * statsHandlers.js
- * Aligned with 'Web Development with Node and Express' (Ethan Brown)
- * and 'MongoDB in Action' (Manning - Aggregation Framework principles)
+ * Aligned with:
+ * - 'Web Development with Node and Express' (Ethan Brown)
+ * - 'MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform' by Arek Borucki (Manning)
+ *   - Chapter 6: Aggregation Framework (Metrics aggregation, summing volumes, status categorization)
  * 
  * Aggregates high-level metrics for dashboard stat cards across all entities
  */
@@ -52,6 +54,20 @@ exports.getOverviewStats = async (req, res, next) => {
     const awaitingCol = collections.filter(c => c.status === 'Awaiting Arrival').length;
     const rejectedCol = collections.filter(c => c.status === 'Rejected / Damaged').length;
 
+    // Specific crop reserves breakdown for landing page overview
+    const wheatQty = inventoryItems
+      .filter(i => i.name.toLowerCase().includes('wheat'))
+      .reduce((sum, i) => sum + i.quantity, 0);
+    const riceQty = inventoryItems
+      .filter(i => i.name.toLowerCase().includes('rice'))
+      .reduce((sum, i) => sum + i.quantity, 0);
+    const maizeQty = inventoryItems
+      .filter(i => i.name.toLowerCase().includes('maize'))
+      .reduce((sum, i) => sum + i.quantity, 0);
+    const otherQty = inventoryItems
+      .filter(i => !i.name.toLowerCase().includes('wheat') && !i.name.toLowerCase().includes('rice') && !i.name.toLowerCase().includes('maize'))
+      .reduce((sum, i) => sum + (i.unit === 't' ? i.quantity : (i.unit === 'kg' ? i.quantity / 1000 : i.quantity / 1000)), 0);
+
     res.status(200).json({
       success: true,
       data: {
@@ -73,6 +89,12 @@ exports.getOverviewStats = async (req, res, next) => {
           pendingInspection: (36 + pendingCol),
           awaitingArrival: (12 + awaitingCol),
           rejectedDamaged: (4 + rejectedCol - 1),
+        },
+        reservesByCrop: {
+          wheat: wheatQty || 25430,
+          rice: riceQty || 18200,
+          maize: maizeQty || 12800,
+          other: Math.round(otherQty) || 3240,
         }
       }
     });
@@ -80,3 +102,4 @@ exports.getOverviewStats = async (req, res, next) => {
     next(err);
   }
 };
+

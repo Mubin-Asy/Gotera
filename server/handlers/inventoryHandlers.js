@@ -1,18 +1,18 @@
 /**
  * inventoryHandlers.js
- * Aligned with 'Web Development with Node and Express' (Ethan Brown)
- * and 'MongoDB in Action' (Manning)
- * 
- * CRUD Handlers for Food Inventory items:
- * - listItems: filter by category, warehouse, search query
- * - getItem: fetch single item by id
- * - createItem: validate and insert new food record
- * - updateItem: update item attributes (quantity, warehouse, status)
- * - deleteItem: remove obsolete food record
+ * Aligned with:
+ * - 'Web Development with Node and Express' (Ethan Brown)
+ * - 'MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform' by Arek Borucki (Manning)
+ *   - Chapter 5: CRUD Operations & Query Language (Atomic insert, update, delete, $regex, $or operators)
+ *   - Chapter 7: Indexing Strategies & Query Optimization
  */
 
 const InventoryItem = require('../models/InventoryItem');
 const { getMemoryStore, getIsConnected } = require('../db/connection');
+
+function escapeRegex(text) {
+  return text ? text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') : '';
+}
 
 exports.listItems = async (req, res, next) => {
   try {
@@ -24,10 +24,11 @@ exports.listItems = async (req, res, next) => {
       if (warehouse && warehouse !== 'All') query.warehouse = warehouse;
       if (status && status !== 'All') query.status = status;
       if (search) {
+        const safeSearch = escapeRegex(search);
         query.$or = [
-          { name: { $regex: search, $options: 'i' } },
-          { subCategory: { $regex: search, $options: 'i' } },
-          { warehouse: { $regex: search, $options: 'i' } }
+          { name: { $regex: safeSearch, $options: 'i' } },
+          { subCategory: { $regex: safeSearch, $options: 'i' } },
+          { warehouse: { $regex: safeSearch, $options: 'i' } }
         ];
       }
       const items = await InventoryItem.find(query).sort({ createdAt: -1 });
@@ -87,7 +88,7 @@ exports.getItem = async (req, res, next) => {
 
 exports.createItem = async (req, res, next) => {
   try {
-    const { name, category, subCategory, quantity, unit, warehouse, status, notes } = req.body;
+    const { name, category, subCategory, quantity, unit, warehouse, status, notes, expiryDate } = req.body;
 
     if (!name || quantity === undefined || !warehouse) {
       return res.status(400).json({
@@ -105,6 +106,7 @@ exports.createItem = async (req, res, next) => {
       warehouse,
       status: status || 'In Stock',
       lastUpdated: new Date(),
+      expiryDate: expiryDate ? new Date(expiryDate) : undefined,
       notes: notes || '',
     };
 

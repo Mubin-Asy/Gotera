@@ -1,10 +1,10 @@
 /**
  * CollectionRecord.js
- * Aligned with 'MongoDB in Action' (Manning)
+ * Aligned with 'MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform'
+ * by Arek Borucki (Manning)
  * 
- * Schema for incoming food receiving & collection logs:
- * - Natural key index on recordId (e.g., GC-2026-1187)
- * - Traceability of donor/source, food item, destination warehouse, and inspection status
+ * - Chapter 4: Document Data Modeling & Schema Design (Shipment traceability & schemas)
+ * - Chapter 7: Indexing Strategies (Natural key uniqueness index on recordId)
  */
 
 const mongoose = require('mongoose');
@@ -30,7 +30,7 @@ const collectionRecordSchema = new mongoose.Schema({
   unit: {
     type: String,
     required: true,
-    enum: ['t', 'Tonnes', 'kg', 'Kilograms', 'L', 'Litres', 'bags', 'cartons'],
+    enum: ['t', 'Tonnes', 'kg', 'Kilograms', 'L', 'Litres', 'bags', 'Bags', 'cartons', 'Cartons'],
     default: 't',
   },
   source: {

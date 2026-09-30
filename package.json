@@ -1,0 +1,12 @@
+{
+  "name": "gotera",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gotera - National Emergency Food Reserve Management System",
+  "scripts": {
+    "server": "npm --prefix server start",
+    "server:dev": "npm --prefix server run dev",
+    "client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build"
+  }
+}

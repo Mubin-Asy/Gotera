@@ -1,17 +1,18 @@
 /**
  * warehouseHandlers.js
- * Aligned with 'Web Development with Node and Express' (Ethan Brown)
- * 
- * CRUD Handlers for Warehouses:
- * - listWarehouses: fetch list with regional capacity & utilization
- * - getWarehouse: fetch single warehouse
- * - createWarehouse: add new regional storage facility
- * - updateWarehouse: edit capacity, manager, operational status
- * - deleteWarehouse: remove facility
+ * Aligned with:
+ * - 'Web Development with Node and Express' (Ethan Brown)
+ * - 'MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform' by Arek Borucki (Manning)
+ *   - Chapter 4: Document Data Modeling (Storage facility documents)
+ *   - Chapter 5: CRUD Operations & Query Language (Sorting, filtering, capacity updates)
  */
 
 const Warehouse = require('../models/Warehouse');
 const { getMemoryStore, getIsConnected } = require('../db/connection');
+
+function escapeRegex(text) {
+  return text ? text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') : '';
+}
 
 exports.listWarehouses = async (req, res, next) => {
   try {
@@ -22,10 +23,11 @@ exports.listWarehouses = async (req, res, next) => {
       if (region && region !== 'All') query.region = region;
       if (status && status !== 'All') query.status = status;
       if (search) {
+        const safeSearch = escapeRegex(search);
         query.$or = [
-          { name: { $regex: search, $options: 'i' } },
-          { region: { $regex: search, $options: 'i' } },
-          { manager: { $regex: search, $options: 'i' } }
+          { name: { $regex: safeSearch, $options: 'i' } },
+          { region: { $regex: safeSearch, $options: 'i' } },
+          { manager: { $regex: safeSearch, $options: 'i' } }
         ];
       }
       const warehouses = await Warehouse.find(query).sort({ name: 1 });

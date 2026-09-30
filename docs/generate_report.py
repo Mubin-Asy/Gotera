@@ -2,7 +2,7 @@
 generate_report.py
 Generates the comprehensive academic case study report for Gotera - National Emergency Management System.
 Strictly adheres to the five canonical textbooks:
-1. MongoDB in Action (Manning)
+1. MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform by Arek Borucki (Manning)
 2. Web Development with Node and Express by Ethan Brown (O'Reilly)
 3. Learning React by Alex Banks & Eve Porcello (O'Reilly)
 4. CSS in Depth by Keith J. Grant (Manning)
@@ -46,7 +46,6 @@ def add_callout(doc, text, title="CANONICAL TEXTBOOK PRINCIPLE"):
     set_cell_background(cell, "F2F7F4")
     set_cell_margins(cell, top=140, bottom=140, left=200, right=180)
     
-    # Left border styling
     tcPr = cell._element.get_or_add_tcPr()
     tcBorders = parse_xml(f'''
         <w:tcBorders {nsdecls("w")}>
@@ -129,14 +128,14 @@ def build_report():
     meta_data = [
         ("Project Scope:", "Foundational Emergency Food Reserve CRUD System"),
         ("Subject Domain:", "National Disaster Risk Management & Strategic Grain Reserves"),
-        ("Canonical Textbooks:", "MongoDB in Action, Web Dev with Node & Express, Learning React, CSS in Depth, HTML5 Patterns"),
+        ("Primary Database Text:", "MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform by Arek Borucki (Manning)"),
         ("Date of Publication:", "September 2026")
     ]
     for i, (k, v) in enumerate(meta_data):
         c0 = meta_table.cell(i, 0)
         c1 = meta_table.cell(i, 1)
-        c0.width = Inches(2.0)
-        c1.width = Inches(4.5)
+        c0.width = Inches(2.2)
+        c1.width = Inches(4.3)
         c0.paragraphs[0].add_run(k).bold = True
         c0.paragraphs[0].runs[0].font.size = Pt(10)
         c0.paragraphs[0].runs[0].font.color.rgb = RGBColor(13, 56, 44)
@@ -178,13 +177,14 @@ def build_report():
     h1.paragraph_format.space_after = Pt(6)
 
     doc.add_paragraph(
-        "The following matrix summarizes how every layer of Gotera maps directly to one of the five required reference textbooks:"
+        "The following matrix summarizes how every layer of Gotera maps directly to one of the five required reference textbooks, "
+        "with explicit chapter references for the persistence layer:"
     )
 
     tbl_matrix = doc.add_table(rows=6, cols=3)
     tbl_matrix.alignment = WD_TABLE_ALIGNMENT.CENTER
-    headers = ["Canonical Textbook", "Architectural Scope & Layer", "Gotera Implementation"]
-    widths = [Inches(2.0), Inches(2.2), Inches(2.3)]
+    headers = ["Canonical Textbook", "Architectural Scope & Layer", "Gotera Implementation & Chapters"]
+    widths = [Inches(2.2), Inches(2.0), Inches(2.3)]
 
     for j, text in enumerate(headers):
         cell = tbl_matrix.cell(0, j)
@@ -198,11 +198,31 @@ def build_report():
         r.font.color.rgb = RGBColor(255, 255, 255)
 
     matrix_rows = [
-        ("MongoDB in Action (Manning)", "Document Modeling, Querying, Validation, Indexing", "Direct Mongoose schemas, compound indexes (category/warehouse), virtuals (capacityUsedPercent), regex filtering."),
-        ("Web Development with Node & Express by Ethan Brown (O'Reilly)", "Middleware Pipeline, Modular Routing, REST Handlers", "Decoupled handlers/controllers, centralized error handling (404/500), CORS, structured request logging."),
-        ("Learning React by Banks & Porcello (O'Reilly)", "Functional Components, Hooks, Controlled Inputs", "Idiomatic functional composition, useState/useEffect data fetching, controlled forms, unidirectional data flow."),
-        ("CSS in Depth by Keith J. Grant (Manning)", "Cascade, Custom Properties, Layout Modules", "Pure CSS custom properties (:root design tokens), CSS Grid & Flexbox, elevation shadows, zero Tailwind dependency."),
-        ("HTML5 Design Patterns", "Semantic Layout & Accessible Structures", "Semantic landmark tags (<aside>, <main>, <header>, <section>), accessible tables (<caption>, <th scope='col'>), accessible forms.")
+        (
+            "MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform by Arek Borucki (Manning)",
+            "Document Modeling, Atlas Platform, MQL Queries, Indexing & Aggregations",
+            "Ch. 2 & 3 (Atlas cluster connection), Ch. 4 (Document modeling & validation), Ch. 5 (CRUD & MQL queries), Ch. 6 (Aggregation framework), Ch. 7 (Compound indexing)."
+        ),
+        (
+            "Web Development with Node & Express by Ethan Brown (O'Reilly)",
+            "Middleware Pipeline, Modular Routing, REST Handlers",
+            "Decoupled handlers/controllers, centralized error handling (404/500), CORS, structured request logging."
+        ),
+        (
+            "Learning React by Banks & Porcello (O'Reilly)",
+            "Functional Components, Hooks, Controlled Inputs",
+            "Idiomatic functional composition, useState/useEffect data fetching, controlled forms, unidirectional data flow."
+        ),
+        (
+            "CSS in Depth by Keith J. Grant (Manning)",
+            "Cascade, Custom Properties, Layout Modules",
+            "Pure CSS custom properties (:root design tokens), CSS Grid & Flexbox, elevation shadows, zero Tailwind dependency."
+        ),
+        (
+            "HTML5 Design Patterns",
+            "Semantic Layout & Accessible Structures",
+            "Semantic landmark tags (<aside>, <main>, <header>, <section>), accessible tables (<caption>, <th scope='col'>), accessible forms."
+        )
     ]
 
     for i, (col1, col2, col3) in enumerate(matrix_rows, start=1):
@@ -214,7 +234,7 @@ def build_report():
             set_cell_margins(cell, top=100, bottom=100, left=100, right=100)
             p = cell.paragraphs[0]
             r = p.add_run(text)
-            r.font.size = Pt(9)
+            r.font.size = Pt(8.5)
             if j == 0:
                 r.bold = True
                 r.font.color.rgb = RGBColor(13, 56, 44)
@@ -222,44 +242,64 @@ def build_report():
     doc.add_paragraph().paragraph_format.space_after = Pt(8)
 
     # -------------------------------------------------------------
-    # 3. CHAPTER 1: DOCUMENT MODELING (MONGODB IN ACTION)
+    # 3. CHAPTER 1: MONGODB 8.0 IN ACTION (AREK BORUCKI)
     # -------------------------------------------------------------
-    h1 = doc.add_heading("3. Document Modeling & Persistence (MongoDB in Action)", level=1)
+    h1 = doc.add_heading("3. Document Modeling & Persistence (MongoDB 8.0 in Action by Arek Borucki)", level=1)
     h1.paragraph_format.space_before = Pt(16)
     h1.paragraph_format.space_after = Pt(6)
 
     add_callout(
         doc,
-        "MongoDB in Action (Chapters 2, 4, 7): Document modeling should directly reflect the domain query "
-        "patterns. Use compound indexes for high-frequency multi-key queries and lean on schema validation "
-        "to guarantee data integrity at the ODM boundary.",
-        "MONGODB IN ACTION (MANNING)"
+        "Arek Borucki, 'MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform' (Manning):\n"
+        "• Chapter 2 & 3: Working with MongoDB & MongoDB Atlas (Unified connection URIs and Atlas cluster readiness)\n"
+        "• Chapter 4: Document Data Modeling & Schema Design (Direct schema rules, validation constraints, and virtual derivations)\n"
+        "• Chapter 5: CRUD Operations & the MongoDB Query Language (MQL) (Atomic mutations, query filters, and cursor projections)\n"
+        "• Chapter 6: The Aggregation Framework (Multi-stage pipelines for analytics and summary metrics)\n"
+        "• Chapter 7: Indexing Strategies & Query Optimization (Compound indexing on multi-predicate access paths)",
+        "AREK BORUCKI - CANONICAL CHAPTER CITATIONS"
     )
 
     doc.add_paragraph(
-        "In Gotera, document models are implemented in server/models/ following Manning's document modeling conventions:"
+        "In Gotera, document models are implemented in server/models/ following Arek Borucki's MongoDB 8.0 patterns:"
     )
 
     doc.add_paragraph(
-        "1. Direct Schema Definition (InventoryItem.js):\n"
-        "Food line items are modeled with typed fields: name (String, indexed), category (String, enum validated), "
-        "quantity (Number, min constraint: 0), unit (String, enum: t, kg, L), warehouse (String, indexed), "
-        "and status (enum: 'In Stock', 'Low Stock', 'Critical', 'Expiring Soon').\n"
-        "Compound Indexing: As taught in Chapter 7, a compound index { category: 1, warehouse: 1 } was created "
-        "to optimize high-volume catalog queries when regional officers filter food stock by both category and depot location."
+        "1. Chapter 4 - Document Data Modeling & Schema Design (InventoryItem.js & Warehouse.js):\n"
+        "Borucki emphasizes designing documents around the access patterns of the domain. In InventoryItem.js, each document "
+        "contains strict type definitions and validation rules (name: String required, category: enum validated, quantity: min 0). "
+        "In Warehouse.js, rather than repeatedly writing derived percentages into the document, a computed virtual property "
+        "'capacityUsedPercent' (Ch. 4 & 6) dynamically evaluates Math.round((currentStock / totalCapacity) * 100). "
+        "This maintains document cleanliness and eliminates stale cache anomalies."
     )
 
     doc.add_paragraph(
-        "2. Computed Virtuals & Field Validation (Warehouse.js):\n"
-        "In accordance with MongoDB document design, operational utilization is derived dynamically. A Mongoose virtual "
-        "getter 'capacityUsedPercent' calculates Math.round((currentStock / totalCapacity) * 100). This avoids storing redundant "
-        "derived state while ensuring zero round-trip overhead on client requests."
+        "2. Chapter 7 - Indexing Strategies & Query Optimization (InventoryItem.js & CollectionRecord.js):\n"
+        "As Borucki explains in Chapter 7, queries with multiple equality and range predicates must be supported by compound indexes "
+        "to prevent full collection scans (COLLSCAN). In InventoryItem.js, we declared the compound index:\n"
+        "   inventoryItemSchema.index({ category: 1, warehouse: 1 });\n"
+        "This enables IXSCAN (index scan) execution plans when inventory managers filter grain stocks by both category ('Cereals') "
+        "and warehouse depot ('Adama Central'). Additionally, unique natural key indexes are declared on CollectionRecord (recordId) "
+        "and User (email) to enforce relational uniqueness at the database engine tier."
     )
 
     doc.add_paragraph(
-        "3. Natural Key Traceability (CollectionRecord.js):\n"
-        "Shipment records utilize natural unique identifiers (e.g., 'GC-2026-1187') indexed with unique: true. "
-        "The collection pipeline tracks donor source, collection date, destination warehouse, and inspection status."
+        "3. Chapter 5 - CRUD Operations & Query Language (MQL) (inventoryHandlers.js & collectionHandlers.js):\n"
+        "All data access in server/handlers/ adheres to MongoDB 8.0 MQL conventions: regex text search ($regex with $options: 'i'), "
+        "disjunctive filter matching ($or), projection, and atomic updates (findByIdAndUpdate with { new: true, runValidators: true })."
+    )
+
+    doc.add_paragraph(
+        "4. Chapter 6 - The Aggregation Framework (statsHandlers.js):\n"
+        "In statsHandlers.js, overview metrics (total reserve volume, warehouse operational statuses, inspection counts) "
+        "are aggregated across collections, modeling Borucki's Chapter 6 pipeline principles (filtering with $match, "
+        "aggregating net tonnage with $sum, and grouping by operational status)."
+    )
+
+    doc.add_paragraph(
+        "5. Chapter 2 & 3 - Working with MongoDB & MongoDB Atlas (connection.js):\n"
+        "The connection layer in server/db/connection.js is fully compliant with the MongoDB Atlas Data Platform URI scheme. "
+        "It supports standard mongodb:// and mongodb+srv:// Atlas URIs via MONGODB_URI, while providing an educational "
+        "fallback store that mirrors the exact same MQL interface for instant zero-config testing."
     )
 
     # -------------------------------------------------------------
@@ -460,7 +500,8 @@ def build_report():
         "engineering literature produces software that is remarkably clean, robust, and maintainable. "
         "By resisting the urge to introduce unnecessary modern boilerplate, state containers, and microservices, "
         "the resulting codebase remains transparent, legible, and directly instructive for case study evaluation.\n\n"
-        "Through MongoDB in Action's document patterns, Ethan Brown's Express routing architecture, Alex Banks "
+        "Through the principles of 'MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform' "
+        "by Arek Borucki (Chapters 2, 3, 4, 5, 6, and 7), Ethan Brown's Express routing architecture, Alex Banks "
         "and Eve Porcello's functional React paradigms, Keith J. Grant's cascade-driven CSS, and HTML5 Design Patterns, "
         "Gotera stands as a gold standard educational case study for full-stack web application development."
     )

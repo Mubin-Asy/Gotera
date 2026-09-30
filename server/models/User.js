@@ -1,9 +1,10 @@
 /**
  * User.js
- * Aligned with 'MongoDB in Action' (Manning)
+ * Aligned with 'MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform'
+ * by Arek Borucki (Manning)
  * 
- * Schema for users and roles within Gotera National Food Reserve:
- * - Credentials, organization, and role definitions
+ * - Chapter 4: Document Data Modeling & Schema Design (Role-based access & identity schemas)
+ * - Chapter 7: Unique indexing on user email
  */
 
 const mongoose = require('mongoose');

@@ -1,11 +1,11 @@
 /**
  * InventoryItem.js
- * Aligned with 'MongoDB in Action' (Manning)
+ * Aligned with 'MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform'
+ * by Arek Borucki (Manning)
  * 
- * Standard document modeling:
- * - Direct, cohesive schema representing a food reserve line item
- * - Field-level type definitions, validations, and defaults
- * - Compound indexing on warehouse and category for fast aggregation
+ * - Chapter 4: Document Data Modeling & Schema Design (Direct schema validation, field types)
+ * - Chapter 5: CRUD Operations & Query Language (Document lifecycle)
+ * - Chapter 7: Indexing Strategies (Single-field & compound indexes { category: 1, warehouse: 1 })
  */
 
 const mongoose = require('mongoose');
@@ -71,7 +71,7 @@ const inventoryItemSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Compound index for query optimization as described in MongoDB in Action Ch. 7
+// Compound index for query optimization as described in Arek Borucki, MongoDB 8.0 in Action 3rd Ed., Ch. 7
 inventoryItemSchema.index({ category: 1, warehouse: 1 });
 
 module.exports = mongoose.model('InventoryItem', inventoryItemSchema);

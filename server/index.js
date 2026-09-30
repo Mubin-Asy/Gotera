@@ -59,7 +59,7 @@ app.use(serverErrorHandler);
 const server = app.listen(PORT, () => {
   console.log(`====================================================`);
   console.log(`[Gotera Server] Running on http://localhost:${PORT}`);
-  console.log(`[Architecture] Express 5.x / MongoDB in Action`);
+  console.log(`[Architecture] Express 5.x / MongoDB 8.0 in Action 3rd Ed. (Arek Borucki)`);
   console.log(`====================================================`);
 });
 

@@ -19,14 +19,23 @@ exports.login = async (req, res, next) => {
       });
     }
 
+    const cleanIdentity = email.toLowerCase().trim();
+
     if (getIsConnected()) {
-      const user = await User.findOne({ email: email.toLowerCase() });
+      const user = await User.findOne({
+        $or: [
+          { email: cleanIdentity },
+          { fullName: new RegExp(`^${email.trim()}$`, 'i') }
+        ]
+      });
+
       if (!user || user.password !== password) {
         return res.status(401).json({
           success: false,
-          message: 'Invalid credentials. Try meron.kassa@gotera.gov.et / Password123!'
+          message: 'Invalid email/username or password. Please verify credentials.'
         });
       }
+
       return res.status(200).json({
         success: true,
         user: {
@@ -42,29 +51,14 @@ exports.login = async (req, res, next) => {
 
     const store = getMemoryStore().users;
     const user = store.find(u => 
-      u.email.toLowerCase() === email.toLowerCase() ||
-      u.fullName.toLowerCase() === email.toLowerCase()
+      u.email.toLowerCase() === cleanIdentity ||
+      u.fullName.toLowerCase() === cleanIdentity
     );
 
     if (!user || user.password !== password) {
-      // For smooth demo experience, if password matches demo password or default
-      if (email && password) {
-        // Return default user or error
-        return res.status(200).json({
-          success: true,
-          user: {
-            id: 'usr_meron',
-            fullName: 'Meron Kassa',
-            email: email,
-            role: 'Warehouse Manager',
-            organization: 'National Food Reserve Agency',
-            avatar: 'MK'
-          }
-        });
-      }
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: 'Invalid email/username or password. Please verify credentials.'
       });
     }
 
@@ -83,6 +77,7 @@ exports.login = async (req, res, next) => {
     next(err);
   }
 };
+
 
 exports.register = async (req, res, next) => {
   try {
@@ -127,6 +122,11 @@ exports.register = async (req, res, next) => {
     }
 
     const store = getMemoryStore().users;
+    const existingMemory = store.find(u => u.email.toLowerCase() === userData.email.toLowerCase());
+    if (existingMemory) {
+      return res.status(400).json({ success: false, message: 'Email already registered' });
+    }
+
     const newDoc = {
       ...userData,
       _id: `usr_${Date.now()}`,

@@ -1,17 +1,19 @@
 /**
  * collectionHandlers.js
- * Aligned with 'Web Development with Node and Express' (Ethan Brown)
- * 
- * CRUD Handlers for Receiving & Food Collection shipments:
- * - listCollections: fetch list of incoming/inspected records
- * - getCollection: fetch single record
- * - createCollection: log new food shipment collection
- * - updateCollection: change status (Inspected, Received, Pending, Rejected)
- * - deleteCollection: delete record
+ * Aligned with:
+ * - 'Web Development with Node and Express' (Ethan Brown)
+ * - 'MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform' by Arek Borucki (Manning)
+ *   - Chapter 4: Document Data Modeling (Traceability schemas)
+ *   - Chapter 5: CRUD Operations & Query Language (Sorting by collectionDate, natural key filtering)
+ *   - Chapter 7: Indexing Strategies (Unique index queries)
  */
 
 const CollectionRecord = require('../models/CollectionRecord');
 const { getMemoryStore, getIsConnected } = require('../db/connection');
+
+function escapeRegex(text) {
+  return text ? text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') : '';
+}
 
 exports.listCollections = async (req, res, next) => {
   try {
@@ -22,11 +24,12 @@ exports.listCollections = async (req, res, next) => {
       if (status && status !== 'All') query.status = status;
       if (warehouse && warehouse !== 'All') query.destinationWarehouse = warehouse;
       if (search) {
+        const safeSearch = escapeRegex(search);
         query.$or = [
-          { recordId: { $regex: search, $options: 'i' } },
-          { item: { $regex: search, $options: 'i' } },
-          { source: { $regex: search, $options: 'i' } },
-          { destinationWarehouse: { $regex: search, $options: 'i' } }
+          { recordId: { $regex: safeSearch, $options: 'i' } },
+          { item: { $regex: safeSearch, $options: 'i' } },
+          { source: { $regex: safeSearch, $options: 'i' } },
+          { destinationWarehouse: { $regex: safeSearch, $options: 'i' } }
         ];
       }
       const records = await CollectionRecord.find(query).sort({ collectionDate: -1 });

@@ -1,10 +1,10 @@
 /**
  * Warehouse.js
- * Aligned with 'MongoDB in Action' (Manning)
+ * Aligned with 'MongoDB 8.0 in Action, Third Edition: Building on the Atlas Data Platform'
+ * by Arek Borucki (Manning)
  * 
- * Document modeling for regional storage facilities:
- * - Direct embedding of operational capacity and facility manager details
- * - Computed virtuals for utilization percentage
+ * - Chapter 4: Document Data Modeling & Schema Design (Facility documents & capacity constraints)
+ * - Chapter 6: Computed properties and virtual projections
  */
 
 const mongoose = require('mongoose');
@@ -60,7 +60,7 @@ const warehouseSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Virtual property for capacity percentage (MongoDB in Action)
+// Virtual property for capacity percentage (Arek Borucki, MongoDB 8.0 in Action 3rd Ed., Ch. 4 & 6)
 warehouseSchema.virtual('capacityUsedPercent').get(function() {
   if (!this.totalCapacity || this.totalCapacity === 0) return 0;
   return Math.min(100, Math.round((this.currentStock / this.totalCapacity) * 100));

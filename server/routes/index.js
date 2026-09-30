@@ -11,12 +11,16 @@ const router = express.Router();
 const inventoryRouter = require('./api/inventory');
 const warehousesRouter = require('./api/warehouses');
 const collectionsRouter = require('./api/collections');
+const distributionsRouter = require('./api/distributions');
+const emergencyRouter = require('./api/emergency');
 const statsRouter = require('./api/stats');
 const authRouter = require('./api/auth');
 
 router.use('/inventory', inventoryRouter);
 router.use('/warehouses', warehousesRouter);
 router.use('/collections', collectionsRouter);
+router.use('/distributions', distributionsRouter);
+router.use('/emergency', emergencyRouter);
 router.use('/stats', statsRouter);
 router.use('/auth', authRouter);
 
