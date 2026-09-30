@@ -107,6 +107,7 @@ export default function LandingPage({
         </div>
 
         {/* Navigation Links: Home, About, Food Items, Contact */}
+        {/* Navigation Links: Home, About, Contact */}
         <nav aria-label="Main Navigation">
           <ul className="landing-nav-links">
             <li>
@@ -125,15 +126,6 @@ export default function LandingPage({
                 onClick={() => scrollToSection('about')}
               >
                 About
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
-                className={`landing-nav-link ${activeNav === 'food' ? 'active' : ''}`}
-                onClick={() => handleFeatureClick('inventory')}
-              >
-                Food Items
               </button>
             </li>
             <li>
@@ -356,14 +348,14 @@ export default function LandingPage({
               </div>
             </div>
 
-            {/* Metric 4: Other Food Items */}
+            {/* Metric 4: Other Reserves */}
             <div className="overview-metric-card">
               <div className="overview-icon-circle overview-icon-other" aria-hidden="true">
                 <Boxes size={24} />
               </div>
               <div className="overview-metric-info">
                 <span className="overview-metric-value">{otherVolume}</span>
-                <span className="overview-metric-label">Other Food Items</span>
+                <span className="overview-metric-label">Other Reserves</span>
               </div>
             </div>
           </div>
@@ -411,80 +403,95 @@ export default function LandingPage({
             </div>
           </div>
         </section>
+      </main>
 
-        {/* 6. In-Page Contact Section (Smoothly scrolled to when Contact is clicked) */}
-        <section id="contact" className="landing-contact-section" aria-label="Contact Information">
-          <div className="contact-header">
-            <span className="contact-badge">Official Contact</span>
-            <h2 className="contact-title">National Reserve Coordination Agency</h2>
-            <p className="contact-subtitle">
-              Reach out for inter-agency coordination, emergency food relief allocations, or facility inspections.
+      {/* 6. Integrated Footer & Official Contact Landmark */}
+      <footer id="contact" className="landing-footer" aria-label="Gotera Contact & Information">
+        <div className="footer-top-container">
+          {/* Column 1: Brand & Strategic Mandate */}
+          <div className="footer-col footer-col-brand">
+            <div className="footer-brand-header">
+              <div className="landing-brand-logo" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+                  <path
+                    d="M18 3.5C12.5 10 8 15 8 21a10 10 0 0 0 20 0c0-6-4.5-11-10-17.5z"
+                    fill="#10b981"
+                  />
+                  <circle cx="18" cy="21.5" r="4.5" fill="#34d399" />
+                </svg>
+              </div>
+              <span className="footer-brand-title">GOTERA</span>
+            </div>
+            <p className="footer-brand-desc">
+              Federal Democratic Republic of Ethiopia<br />
+              National Emergency Food Reserve Agency — Strategic buffer crop reserves safeguarding food security across regional warehouse depots.
             </p>
           </div>
 
-          <div className="contact-grid">
-            <div className="contact-card">
-              <MapPin className="contact-icon" size={24} />
-              <h3 className="contact-card-title">Headquarters</h3>
-              <p className="contact-card-detail">
-                National Disaster Risk Management Commission<br />
-                Addis Ababa, Ethiopia
-              </p>
-            </div>
-
-            <div className="contact-card">
-              <Phone className="contact-icon" size={24} />
-              <h3 className="contact-card-title">Direct Inquiries & Hotline</h3>
-              <p className="contact-card-detail">
-                Toll-Free Emergency: <strong>833</strong><br />
-                Office: +251 11 551 7000
-              </p>
-            </div>
-
-            <div className="contact-card">
-              <Mail className="contact-icon" size={24} />
-              <h3 className="contact-card-title">Official Correspondence</h3>
-              <p className="contact-card-detail">
-                reserves@gotera.gov.et<br />
-                coordination@gotera.gov.et
-              </p>
-            </div>
+          {/* Column 2: Navigation Links */}
+          <div className="footer-col footer-col-nav">
+            <h4 className="footer-col-title">Navigation</h4>
+            <ul className="footer-col-list">
+              <li>
+                <button type="button" className="footer-link-btn" onClick={() => scrollToSection('home')}>
+                  Home
+                </button>
+              </li>
+              <li>
+                <button type="button" className="footer-link-btn" onClick={() => scrollToSection('about')}>
+                  About GOTERA
+                </button>
+              </li>
+              <li>
+                <button type="button" className="footer-link-btn" onClick={() => handleFeatureClick('receiving')}>
+                  Food Collection
+                </button>
+              </li>
+              <li>
+                <button type="button" className="footer-link-btn" onClick={() => handleFeatureClick('warehouses')}>
+                  Storage Management
+                </button>
+              </li>
+            </ul>
           </div>
-        </section>
-      </main>
 
-      {/* 7. Footer */}
-      <footer className="landing-footer">
-        <div className="footer-left">
-          <div className="landing-brand-logo" aria-hidden="true">
-            <svg width="26" height="26" viewBox="0 0 36 36" fill="none">
-              <path
-                d="M18 3.5C12.5 10 8 15 8 21a10 10 0 0 0 20 0c0-6-4.5-11-10-17.5z"
-                fill="#10b981"
-              />
-              <circle cx="18" cy="21.5" r="4.5" fill="#34d399" />
-            </svg>
+          {/* Column 3: Contact & Headquarters */}
+          <div className="footer-col footer-col-contact">
+            <h4 className="footer-col-title">Contact & Headquarters</h4>
+            <ul className="footer-contact-list">
+              <li className="footer-contact-item">
+                <MapPin className="footer-contact-icon" size={18} />
+                <span>
+                  National Disaster Risk Management Commission<br />
+                  Addis Ababa, Ethiopia
+                </span>
+              </li>
+              <li className="footer-contact-item">
+                <Phone className="footer-contact-icon" size={18} />
+                <span>
+                  Emergency Hotline: <strong>833</strong> (Toll-Free)<br />
+                  Direct Office: +251 11 551 7000
+                </span>
+              </li>
+              <li className="footer-contact-item">
+                <Mail className="footer-contact-icon" size={18} />
+                <span>
+                  reserves@gotera.gov.et<br />
+                  coordination@gotera.gov.et
+                </span>
+              </li>
+            </ul>
           </div>
-          <span className="footer-brand-title">GOTERA</span>
         </div>
 
-        <div className="footer-right">
-          <div className="footer-links">
-            <button type="button" className="footer-link" onClick={() => scrollToSection('home')}>
-              Home
-            </button>
-            <button type="button" className="footer-link" onClick={() => scrollToSection('about')}>
-              About
-            </button>
-            <button type="button" className="footer-link" onClick={() => scrollToSection('contact')}>
-              Contact
-            </button>
-          </div>
-
-          <div className="footer-divider" aria-hidden="true"></div>
-
+        {/* Bottom Bar: Copyright & System Status */}
+        <div className="footer-bottom-bar">
           <div className="footer-copyright">
-            © 2025 GOTERA. All rights reserved.
+            © 2026 GOTERA National Emergency Food Reserve System. All rights reserved.
+          </div>
+          <div className="footer-status-tag">
+            <span className="footer-status-dot"></span>
+            Strategic Reserve Network Active • 8 Regional Depots
           </div>
         </div>
       </footer>

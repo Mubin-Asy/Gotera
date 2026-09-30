@@ -10,6 +10,11 @@ import WarehouseModal from './components/Warehouses/WarehouseModal';
 import ReceivingTable from './components/Receiving/ReceivingTable';
 import ReceivingForm from './components/Receiving/ReceivingForm';
 import ReceivingModal from './components/Receiving/ReceivingModal';
+import DistributionView from './components/Distribution/DistributionView';
+import DistributionModal from './components/Distribution/DistributionModal';
+import EmergencyRequestsView from './components/Emergency/EmergencyRequestsView';
+import EmergencyModal from './components/Emergency/EmergencyModal';
+import ReportsAnalytics from './components/Reports/ReportsAnalytics';
 import SignIn from './components/Auth/SignIn';
 import CreateAccount from './components/Auth/CreateAccount';
 import ConfirmDialog from './components/Common/ConfirmDialog';
@@ -375,6 +380,171 @@ const initialCollectionsFallback = [
   }
 ];
 
+const initialDistributionsFallback = [
+  {
+    _id: 'dst_1',
+    distributionId: 'DST-2026-041',
+    item: 'Durum Wheat Grain',
+    quantity: 150,
+    unit: 't',
+    sourceWarehouse: 'Adama Central Warehouse',
+    destination: 'East Hararghe Drought Relief Zone',
+    carrier: 'Ethiopian Freight Logistics',
+    dispatchDate: new Date('2026-09-08T09:00:00Z'),
+    status: 'In Transit',
+    priority: 'High',
+    notes: 'Emergency wheat allocation for drought response'
+  },
+  {
+    _id: 'dst_2',
+    distributionId: 'DST-2026-042',
+    item: 'Yellow Maize Grain',
+    quantity: 200,
+    unit: 't',
+    sourceWarehouse: 'Bahir Dar Depot',
+    destination: 'Wag Hemra Humanitarian Relief Council',
+    carrier: 'Amhara Relief Transport Fleet',
+    dispatchDate: new Date('2026-09-07T11:30:00Z'),
+    status: 'Delivered',
+    priority: 'High',
+    notes: 'Food security buffer release for food insecure woredas'
+  },
+  {
+    _id: 'dst_3',
+    distributionId: 'DST-2026-043',
+    item: 'White Milled Rice',
+    quantity: 85,
+    unit: 't',
+    sourceWarehouse: 'Mekelle Warehouse',
+    destination: 'Shire IDP Resettlement Center',
+    carrier: 'Red Cross Logistics Team',
+    dispatchDate: new Date('2026-09-06T14:15:00Z'),
+    status: 'In Transit',
+    priority: 'Critical',
+    notes: 'Urgent nutritional rations for displaced families'
+  },
+  {
+    _id: 'dst_4',
+    distributionId: 'DST-2026-044',
+    item: 'Refined Cooking Oil',
+    quantity: 25,
+    unit: 't',
+    sourceWarehouse: 'Gambella Warehouse',
+    destination: 'Itang Refugee Nutrition Hub',
+    carrier: 'UNHCR Transport Fleet',
+    dispatchDate: new Date('2026-09-05T08:45:00Z'),
+    status: 'Delivered',
+    priority: 'Moderate',
+    notes: 'Monthly edible oil ration release'
+  },
+  {
+    _id: 'dst_5',
+    distributionId: 'DST-2026-045',
+    item: 'Red Haricot Beans',
+    quantity: 90,
+    unit: 't',
+    sourceWarehouse: 'Adama Central Warehouse',
+    destination: 'Somali Region Lowland Distribution Center',
+    carrier: 'Disaster Risk Management Commission',
+    dispatchDate: new Date('2026-09-04T10:00:00Z'),
+    status: 'Dispatched',
+    priority: 'High',
+    notes: 'Protein food rations for pastoral zones'
+  },
+  {
+    _id: 'dst_6',
+    distributionId: 'DST-2026-046',
+    item: 'Fortified Corn Soya Blend (CSB+)',
+    quantity: 40,
+    unit: 't',
+    sourceWarehouse: 'Hawassa Hub',
+    destination: 'Sidama Infant Malnutrition Clinic',
+    carrier: 'UNICEF Logistics Service',
+    dispatchDate: new Date('2026-09-03T16:20:00Z'),
+    status: 'Delivered',
+    priority: 'Critical',
+    notes: 'Maternal and child targeted supplementary feeding'
+  }
+];
+
+const initialEmergencyFallback = [
+  {
+    _id: 'emr_1',
+    requestId: 'EMR-2026-801',
+    authority: 'Somali Region Disaster Bureau',
+    region: 'Somali Region',
+    affectedPopulation: 75000,
+    item: 'Yellow Maize Grain',
+    quantity: 450,
+    unit: 't',
+    urgency: 'Critical',
+    status: 'Pending Review',
+    requestDate: new Date('2026-09-08T08:30:00Z'),
+    assignedWarehouse: 'Dire Dawa Depot',
+    details: 'Severe lowland seasonal rainfall deficit affecting agro-pastoral communities in Gode zone.'
+  },
+  {
+    _id: 'emr_2',
+    requestId: 'EMR-2026-802',
+    authority: 'Afar Drought Relief Taskforce',
+    region: 'Afar Region',
+    affectedPopulation: 42000,
+    item: 'Durum Wheat Grain',
+    quantity: 300,
+    unit: 't',
+    urgency: 'Critical',
+    status: 'Approved',
+    requestDate: new Date('2026-09-07T10:15:00Z'),
+    assignedWarehouse: 'Kombolcha Strategic Silo',
+    details: 'Urgent grain requisition for drought-affected pastoralists in Zone 2.'
+  },
+  {
+    _id: 'emr_3',
+    requestId: 'EMR-2026-803',
+    authority: 'Tigray Humanitarian Commission',
+    region: 'Tigray Region',
+    affectedPopulation: 60000,
+    item: 'White Milled Rice',
+    quantity: 380,
+    unit: 't',
+    urgency: 'High',
+    status: 'Allocated',
+    requestDate: new Date('2026-09-05T12:00:00Z'),
+    assignedWarehouse: 'Mekelle Warehouse',
+    details: 'Monthly ration allocation for returnee resettlement centers.'
+  },
+  {
+    _id: 'emr_4',
+    requestId: 'EMR-2026-804',
+    authority: 'Borena Lowland Emergency Council',
+    region: 'Oromia Region',
+    affectedPopulation: 35000,
+    item: 'Red Haricot Beans',
+    quantity: 120,
+    unit: 't',
+    urgency: 'High',
+    status: 'Approved',
+    requestDate: new Date('2026-09-04T15:20:00Z'),
+    assignedWarehouse: 'Adama Central Warehouse',
+    details: 'High protein pulse allocation to supplement cereal distribution.'
+  },
+  {
+    _id: 'emr_5',
+    requestId: 'EMR-2026-805',
+    authority: 'Wolayita Zonal Nutrition Directorate',
+    region: 'South Ethiopia',
+    affectedPopulation: 18000,
+    item: 'Fortified Corn Soya Blend (CSB+)',
+    quantity: 50,
+    unit: 't',
+    urgency: 'Moderate',
+    status: 'Allocated',
+    requestDate: new Date('2026-09-02T11:00:00Z'),
+    assignedWarehouse: 'Hawassa Hub',
+    details: 'Targeted supplementary feeding program for expectant mothers and infants.'
+  }
+];
+
 export default function App() {
   // Authentication & View State: Always start on the Home page
   const [currentUser, setCurrentUser] = useState(null);
@@ -390,6 +560,8 @@ export default function App() {
   const [inventoryItems, setInventoryItems] = useState(initialInventoryFallback);
   const [warehouses, setWarehouses] = useState(initialWarehousesFallback);
   const [collections, setCollections] = useState(initialCollectionsFallback);
+  const [distributions, setDistributions] = useState(initialDistributionsFallback);
+  const [emergencyRequests, setEmergencyRequests] = useState(initialEmergencyFallback);
   const [stats, setStats] = useState({
     inventory: {
       totalLineItems: '1,484',
@@ -427,6 +599,8 @@ export default function App() {
   const [inventoryModal, setInventoryModal] = useState({ isOpen: false, mode: 'add', item: null });
   const [warehouseModal, setWarehouseModal] = useState({ isOpen: false, mode: 'add', warehouse: null });
   const [receivingModal, setReceivingModal] = useState({ isOpen: false, mode: 'view', record: null });
+  const [distributionModal, setDistributionModal] = useState({ isOpen: false, mode: 'add', distribution: null });
+  const [emergencyModal, setEmergencyModal] = useState({ isOpen: false, mode: 'add', request: null });
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
   // 1. Data Fetching Effect (Asynchronous mount fetch with cleanup)
@@ -434,10 +608,12 @@ export default function App() {
     let isMounted = true;
     async function loadData() {
       try {
-        const [invData, whData, colData, statsData] = await Promise.all([
+        const [invData, whData, colData, distData, emrData, statsData] = await Promise.all([
           apiFetch('/inventory'),
           apiFetch('/warehouses'),
           apiFetch('/collections'),
+          apiFetch('/distributions'),
+          apiFetch('/emergency'),
           apiFetch('/stats/overview'),
         ]);
 
@@ -445,6 +621,8 @@ export default function App() {
         if (invData?.success && invData.data?.length > 0) setInventoryItems(invData.data);
         if (whData?.success && whData.data?.length > 0) setWarehouses(whData.data);
         if (colData?.success && colData.data?.length > 0) setCollections(colData.data);
+        if (distData?.success && distData.data?.length > 0) setDistributions(distData.data);
+        if (emrData?.success && emrData.data?.length > 0) setEmergencyRequests(emrData.data);
         if (statsData?.success && statsData.data) setStats(statsData.data);
       } catch (err) {
         console.warn('API sync warning (using offline-safe store):', err.message);
@@ -700,6 +878,124 @@ export default function App() {
     });
   };
 
+  // 6. CRUD Operations - Distribution & Dispatches
+  const handleSaveDistribution = async (distData) => {
+    try {
+      const result = await apiFetch('/distributions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(distData)
+      });
+      if (result?.success) {
+        setDistributions(prev => [result.data, ...prev]);
+      } else {
+        const fallback = {
+          ...distData,
+          _id: `dst_${Date.now()}`,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        setDistributions(prev => [fallback, ...prev]);
+      }
+      setDistributionModal({ isOpen: false, mode: 'add', distribution: null });
+    } catch (err) {
+      console.error('Save distribution error:', err);
+    }
+  };
+
+  const handleUpdateDistributionStatus = async (dist, newStatus) => {
+    try {
+      const id = dist._id || dist.distributionId;
+      await apiFetch(`/distributions/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+    } catch (err) {
+      console.debug('Update status fallback:', err);
+    }
+    setDistributions(prev =>
+      prev.map(d => (String(d._id) === String(dist._id) || d.distributionId === dist.distributionId ? { ...d, status: newStatus } : d))
+    );
+  };
+
+  const handleDeleteDistribution = (dist) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Remove Dispatch Record',
+      message: `Delete distribution record "${dist.distributionId}" (${dist.item} to ${dist.destination})?`,
+      onConfirm: async () => {
+        const id = dist._id || dist.distributionId;
+        try {
+          await apiFetch(`/distributions/${id}`, { method: 'DELETE' });
+        } catch (err) {
+          console.debug('Delete distribution fallback:', err);
+        }
+        setDistributions(prev => prev.filter(d => d._id !== id && d.distributionId !== id));
+        setConfirmDialog({ isOpen: false, title: '', message: '', onConfirm: null });
+      }
+    });
+  };
+
+  // 7. CRUD Operations - Emergency Requests
+  const handleSaveEmergencyRequest = async (reqData) => {
+    try {
+      const result = await apiFetch('/emergency', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqData)
+      });
+      if (result?.success) {
+        setEmergencyRequests(prev => [result.data, ...prev]);
+      } else {
+        const fallback = {
+          ...reqData,
+          _id: `emr_${Date.now()}`,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        setEmergencyRequests(prev => [fallback, ...prev]);
+      }
+      setEmergencyModal({ isOpen: false, mode: 'add', request: null });
+    } catch (err) {
+      console.error('Save emergency error:', err);
+    }
+  };
+
+  const handleUpdateEmergencyStatus = async (reqItem, newStatus) => {
+    try {
+      const id = reqItem._id || reqItem.requestId;
+      await apiFetch(`/emergency/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+    } catch (err) {
+      console.debug('Update emergency fallback:', err);
+    }
+    setEmergencyRequests(prev =>
+      prev.map(r => (String(r._id) === String(reqItem._id) || r.requestId === reqItem.requestId ? { ...r, status: newStatus } : r))
+    );
+  };
+
+  const handleDeleteEmergencyRequest = (reqItem) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Remove Emergency Requisition',
+      message: `Delete requisition "${reqItem.requestId}" from ${reqItem.authority}?`,
+      onConfirm: async () => {
+        const id = reqItem._id || reqItem.requestId;
+        try {
+          await apiFetch(`/emergency/${id}`, { method: 'DELETE' });
+        } catch (err) {
+          console.debug('Delete emergency fallback:', err);
+        }
+        setEmergencyRequests(prev => prev.filter(r => r._id !== id && r.requestId !== id));
+        setConfirmDialog({ isOpen: false, title: '', message: '', onConfirm: null });
+      }
+    });
+  };
+
   // Filtered Food Inventory Items
   const filteredInventory = inventoryItems.filter((item) => {
     const matchCat = categoryFilter === 'All' || item.category?.toLowerCase() === categoryFilter.toLowerCase();
@@ -810,8 +1106,6 @@ export default function App() {
       <Sidebar
         activeTab={activeTab}
         onSelectTab={setActiveTab}
-        currentUser={currentUser}
-        onNavigateHome={() => setCurrentView('home')}
         onLogout={handleLogout}
       />
 
@@ -820,15 +1114,16 @@ export default function App() {
         <Header
           activeTab={activeTab}
           currentUser={currentUser}
-          onNavigateHome={() => setCurrentView('home')}
           onLogout={handleLogout}
           searchQuery={globalSearch}
           onSearchChange={setGlobalSearch}
         />
 
         <div className="page-container">
-          {/* Top 4 Stat Indicator Cards */}
-          <StatCards activeTab={activeTab} stats={stats} />
+          {/* Top 4 Stat Indicator Cards (shown for inventory, warehouses, receiving) */}
+          {(activeTab === 'inventory' || activeTab === 'warehouses' || activeTab === 'receiving') && (
+            <StatCards activeTab={activeTab} stats={stats} />
+          )}
 
           {/* View Tab 1: Food Inventory (Crops) View */}
           {activeTab === 'inventory' && (
@@ -904,23 +1199,41 @@ export default function App() {
             </>
           )}
 
-          {/* Fallback for other navigation items */}
-          {activeTab !== 'inventory' && activeTab !== 'warehouses' && activeTab !== 'receiving' && (
-            <section className="data-card" style={{ padding: '3rem', textAlign: 'center' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem' }}>
-                {activeTab.toUpperCase()} Module
-              </h2>
-              <p style={{ color: 'var(--color-text-secondary)', maxWidth: '540px', margin: '0 auto 1.5rem auto' }}>
-                This operational module is linked to the Gotera core registry. You can explore the live CRUD operations in <strong>Food Inventory</strong>, <strong>Warehouses</strong>, and <strong>Receiving / Food Collection</strong>.
-              </p>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => setActiveTab('inventory')}
-              >
-                Go to Food Inventory
-              </button>
-            </section>
+          {/* View Tab 4: Distribution Module */}
+          {activeTab === 'distribution' && (
+            <DistributionView
+              distributions={distributions}
+              warehousesList={warehouses}
+              onAddDistribution={() => setDistributionModal({ isOpen: true, mode: 'add', distribution: null })}
+              onViewDistribution={(dist) => setDistributionModal({ isOpen: true, mode: 'view', distribution: dist })}
+              onUpdateStatus={handleUpdateDistributionStatus}
+              onDeleteDistribution={handleDeleteDistribution}
+              globalSearch={globalSearch}
+            />
+          )}
+
+          {/* View Tab 5: Emergency Requests Module */}
+          {activeTab === 'emergency' && (
+            <EmergencyRequestsView
+              requests={emergencyRequests}
+              warehousesList={warehouses}
+              onAddRequest={() => setEmergencyModal({ isOpen: true, mode: 'add', request: null })}
+              onViewRequest={(req) => setEmergencyModal({ isOpen: true, mode: 'view', request: req })}
+              onUpdateStatus={handleUpdateEmergencyStatus}
+              onDeleteRequest={handleDeleteEmergencyRequest}
+              globalSearch={globalSearch}
+            />
+          )}
+
+          {/* View Tab 6: Reports & Analytics Module */}
+          {activeTab === 'reports' && (
+            <ReportsAnalytics
+              inventoryItems={inventoryItems}
+              warehouses={warehouses}
+              collections={collections}
+              distributions={distributions}
+              stats={stats}
+            />
           )}
         </div>
       </main>
@@ -958,6 +1271,32 @@ export default function App() {
           warehousesList={warehouses}
           onClose={() => setReceivingModal({ isOpen: false, mode: 'view', record: null })}
           onSave={handleUpdateCollection}
+        />
+      )}
+
+      {distributionModal.isOpen && (
+        <DistributionModal
+          key={distributionModal.distribution?._id || distributionModal.distribution?.distributionId || `dist-modal-${distributionModal.mode}`}
+          isOpen={distributionModal.isOpen}
+          mode={distributionModal.mode}
+          distribution={distributionModal.distribution}
+          warehousesList={warehouses}
+          inventoryList={inventoryItems}
+          onClose={() => setDistributionModal({ isOpen: false, mode: 'add', distribution: null })}
+          onSave={handleSaveDistribution}
+        />
+      )}
+
+      {emergencyModal.isOpen && (
+        <EmergencyModal
+          key={emergencyModal.request?._id || emergencyModal.request?.requestId || `emr-modal-${emergencyModal.mode}`}
+          isOpen={emergencyModal.isOpen}
+          mode={emergencyModal.mode}
+          request={emergencyModal.request}
+          warehousesList={warehouses}
+          inventoryList={inventoryItems}
+          onClose={() => setEmergencyModal({ isOpen: false, mode: 'add', request: null })}
+          onSave={handleSaveEmergencyRequest}
         />
       )}
 
