@@ -4,8 +4,7 @@
  * Header landmark with accessible search input and action controls
  */
 
-import React from 'react';
-import { Search, Bell, ChevronDown, LogOut, Home } from 'lucide-react';
+import { Search, LogOut, Home } from 'lucide-react';
 
 export default function Header({
   activeTab,

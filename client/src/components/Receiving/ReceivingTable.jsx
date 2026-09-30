@@ -4,7 +4,6 @@
  * Left column table displaying incoming shipments
  */
 
-import React from 'react';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import StatusBadge from '../Common/StatusBadge';
 

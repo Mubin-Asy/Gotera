@@ -3,7 +3,6 @@
  * Accessible confirmation modal following 'HTML5 Design Patterns' and 'Learning React'
  */
 
-import React from 'react';
 import { AlertTriangle, X } from 'lucide-react';
 
 export default function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel, confirmText = 'Delete' }) {

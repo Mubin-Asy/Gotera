@@ -5,8 +5,8 @@
  * Right column panel for logging incoming food supplies
  */
 
-import React, { useState } from 'react';
-import { Check, Truck } from 'lucide-react';
+import { useState } from 'react';
+import { Check } from 'lucide-react';
 
 export default function ReceivingForm({ warehousesList, onLogCollection }) {
   const [formData, setFormData] = useState({
@@ -14,7 +14,7 @@ export default function ReceivingForm({ warehousesList, onLogCollection }) {
     quantity: '',
     unit: 'Tonnes',
     source: 'World Food Programme',
-    destinationWarehouse: 'Adama Central',
+    destinationWarehouse: 'Adama Central Warehouse',
     collectionDate: new Date().toISOString().slice(0, 10),
     status: 'Pending Inspection',
   });

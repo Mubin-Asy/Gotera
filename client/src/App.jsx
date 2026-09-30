@@ -1,13 +1,4 @@
-/**
- * App.jsx - Gotera Main Stateful Coordinator
- * Aligned with 'Learning React' by Alex Banks & Eve Porcello
- * Features:
- * 1. Public Landing / Home Portal with food reserve metrics and hero banner
- * 2. Authenticated System Dashboard with full CRUD for Food Inventory, Warehouses, and Collections
- * 3. Secure authentication pipeline with session persistence in localStorage
- */
-
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import LandingPage from './components/Home/LandingPage';
 import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
@@ -30,12 +21,12 @@ const API_FALLBACK = 'http://localhost:5000/api';
 async function apiFetch(endpoint, options = {}) {
   try {
     const res = await fetch(`${API_PRIMARY}${endpoint}`, options);
-    if (res.ok) return await res.json();
-  } catch (err) {
-    // Try explicit localhost:5000
+    return await res.json();
+  } catch {
+    // Primary failed (e.g. network/proxy error), fallback to direct port 5000
+    const fallbackRes = await fetch(`${API_FALLBACK}${endpoint}`, options);
+    return await fallbackRes.json();
   }
-  const fallbackRes = await fetch(`${API_FALLBACK}${endpoint}`, options);
-  return await fallbackRes.json();
 }
 
 // Fallback seed crops so presentation fields are NEVER empty under any circumstance
@@ -385,24 +376,13 @@ const initialCollectionsFallback = [
 ];
 
 export default function App() {
-  // Authentication & View State
-  const [currentUser, setCurrentUser] = useState(() => {
-    try {
-      const saved = localStorage.getItem('gotera_user');
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
+  // Authentication & View State: Always start on the Home page
+  const [currentUser, setCurrentUser] = useState(null);
 
   // Current view: 'home' | 'signin' | 'register' | 'dashboard'
-  const [currentView, setCurrentView] = useState(() => {
-    try {
-      return localStorage.getItem('gotera_user') ? 'dashboard' : 'home';
-    } catch {
-      return 'home';
-    }
-  });
+  // Guaranteed to always start from the Home page
+  const [currentView, setCurrentView] = useState('home');
+
 
   const [activeTab, setActiveTab] = useState('inventory');
 
@@ -437,8 +417,6 @@ export default function App() {
       other: 3240,
     }
   });
-  const [isLoading, setIsLoading] = useState(false);
-
   // Search & Filters State
   const [globalSearch, setGlobalSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
@@ -451,30 +429,31 @@ export default function App() {
   const [receivingModal, setReceivingModal] = useState({ isOpen: false, mode: 'view', record: null });
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
-  // 1. Data Fetching Effect
-  const fetchAllData = async () => {
-    try {
-      setIsLoading(true);
-      const [invData, whData, colData, statsData] = await Promise.all([
-        apiFetch('/inventory'),
-        apiFetch('/warehouses'),
-        apiFetch('/collections'),
-        apiFetch('/stats/overview'),
-      ]);
-
-      if (invData?.success && invData.data?.length > 0) setInventoryItems(invData.data);
-      if (whData?.success && whData.data?.length > 0) setWarehouses(whData.data);
-      if (colData?.success && colData.data?.length > 0) setCollections(colData.data);
-      if (statsData?.success && statsData.data) setStats(statsData.data);
-    } catch (err) {
-      console.warn('API sync warning (using offline-safe store):', err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  // 1. Data Fetching Effect (Asynchronous mount fetch with cleanup)
   useEffect(() => {
-    fetchAllData();
+    let isMounted = true;
+    async function loadData() {
+      try {
+        const [invData, whData, colData, statsData] = await Promise.all([
+          apiFetch('/inventory'),
+          apiFetch('/warehouses'),
+          apiFetch('/collections'),
+          apiFetch('/stats/overview'),
+        ]);
+
+        if (!isMounted) return;
+        if (invData?.success && invData.data?.length > 0) setInventoryItems(invData.data);
+        if (whData?.success && whData.data?.length > 0) setWarehouses(whData.data);
+        if (colData?.success && colData.data?.length > 0) setCollections(colData.data);
+        if (statsData?.success && statsData.data) setStats(statsData.data);
+      } catch (err) {
+        console.warn('API sync warning (using offline-safe store):', err.message);
+      }
+    }
+    loadData();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // 2. Authentication Handlers
@@ -582,7 +561,9 @@ export default function App() {
       onConfirm: async () => {
         try {
           await apiFetch(`/inventory/${item._id}`, { method: 'DELETE' });
-        } catch {}
+        } catch (err) {
+          console.debug('Inventory delete fallback:', err);
+        }
         setInventoryItems((prev) => prev.filter((i) => String(i._id) !== String(item._id)));
         setConfirmDialog({ isOpen: false, title: '', message: '', onConfirm: null });
         apiFetch('/stats/overview').then((d) => d?.success && setStats(d.data));
@@ -641,7 +622,9 @@ export default function App() {
       onConfirm: async () => {
         try {
           await apiFetch(`/warehouses/${wh._id}`, { method: 'DELETE' });
-        } catch {}
+        } catch (err) {
+          console.debug('Warehouse delete fallback:', err);
+        }
         setWarehouses((prev) => prev.filter((w) => String(w._id) !== String(wh._id)));
         setConfirmDialog({ isOpen: false, title: '', message: '', onConfirm: null });
         apiFetch('/stats/overview').then((d) => d?.success && setStats(d.data));
@@ -707,7 +690,9 @@ export default function App() {
         const id = rec._id || rec.recordId;
         try {
           await apiFetch(`/collections/${id}`, { method: 'DELETE' });
-        } catch {}
+        } catch (err) {
+          console.debug('Collection delete fallback:', err);
+        }
         setCollections((prev) => prev.filter((c) => c._id !== id && c.recordId !== id));
         setConfirmDialog({ isOpen: false, title: '', message: '', onConfirm: null });
         apiFetch('/stats/overview').then((d) => d?.success && setStats(d.data));
@@ -727,6 +712,55 @@ export default function App() {
       item.warehouse?.toLowerCase().includes(query);
     return matchCat && matchWh && matchSearch;
   });
+
+  // Filtered Warehouses (incorporates global search query)
+  const filteredWarehouses = warehouses.filter((wh) => {
+    if (!globalSearch.trim()) return true;
+    const query = globalSearch.toLowerCase().trim();
+    return (
+      wh.name?.toLowerCase().includes(query) ||
+      wh.region?.toLowerCase().includes(query) ||
+      wh.manager?.toLowerCase().includes(query) ||
+      wh.status?.toLowerCase().includes(query)
+    );
+  });
+
+  // Filtered Collections (incorporates global search query)
+  const filteredCollections = collections.filter((rec) => {
+    if (!globalSearch.trim()) return true;
+    const query = globalSearch.toLowerCase().trim();
+    return (
+      rec.recordId?.toLowerCase().includes(query) ||
+      rec.item?.toLowerCase().includes(query) ||
+      rec.source?.toLowerCase().includes(query) ||
+      rec.destinationWarehouse?.toLowerCase().includes(query) ||
+      rec.status?.toLowerCase().includes(query)
+    );
+  });
+
+  // Real CSV Export Generator for Receiving Logs
+  const handleExportCSV = () => {
+    const headers = ['Record ID', 'Item Name', 'Quantity', 'Unit', 'Source Provider', 'Destination Warehouse', 'Collection Date', 'Status', 'Notes'];
+    const rows = filteredCollections.map((c) => [
+      `"${c.recordId || ''}"`,
+      `"${c.item || ''}"`,
+      c.quantity || 0,
+      `"${c.unit || 't'}"`,
+      `"${c.source || ''}"`,
+      `"${c.destinationWarehouse || ''}"`,
+      `"${c.collectionDate ? new Date(c.collectionDate).toISOString().split('T')[0] : ''}"`,
+      `"${c.status || ''}"`,
+      `"${(c.notes || '').replace(/"/g, '""')}"`
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(',')).join('\n')].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Gotera_Receiving_Log_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   // ================= VIEW ROUTING =================
 
@@ -828,7 +862,7 @@ export default function App() {
           {/* View Tab 2: Warehouses (Management) View */}
           {activeTab === 'warehouses' && (
             <WarehouseGrid
-              warehouses={warehouses}
+              warehouses={filteredWarehouses}
               onAddWarehouse={() => setWarehouseModal({ isOpen: true, mode: 'add', warehouse: null })}
               onEditWarehouse={(wh) => setWarehouseModal({ isOpen: true, mode: 'edit', warehouse: wh })}
               onViewWarehouse={(wh) => setWarehouseModal({ isOpen: true, mode: 'view', warehouse: wh })}
@@ -849,7 +883,7 @@ export default function App() {
                 <button
                   type="button"
                   className="btn btn-outline"
-                  onClick={() => alert('Shipment logs exported to CSV successfully.')}
+                  onClick={handleExportCSV}
                 >
                   Export Log
                 </button>
@@ -857,7 +891,7 @@ export default function App() {
 
               <div className="receiving-split-container">
                 <ReceivingTable
-                  records={collections}
+                  records={filteredCollections}
                   onViewRecord={(rec) => setReceivingModal({ isOpen: true, mode: 'view', record: rec })}
                   onEditRecord={(rec) => setReceivingModal({ isOpen: true, mode: 'edit', record: rec })}
                   onDeleteRecord={handleDeleteCollection}
@@ -892,31 +926,40 @@ export default function App() {
       </main>
 
       {/* Modal Dialogs */}
-      <InventoryModal
-        isOpen={inventoryModal.isOpen}
-        mode={inventoryModal.mode}
-        item={inventoryModal.item}
-        warehousesList={warehouses}
-        onClose={() => setInventoryModal({ isOpen: false, mode: 'add', item: null })}
-        onSave={handleSaveInventory}
-      />
+      {inventoryModal.isOpen && (
+        <InventoryModal
+          key={inventoryModal.item?._id || `inv-modal-${inventoryModal.mode}`}
+          isOpen={inventoryModal.isOpen}
+          mode={inventoryModal.mode}
+          item={inventoryModal.item}
+          warehousesList={warehouses}
+          onClose={() => setInventoryModal({ isOpen: false, mode: 'add', item: null })}
+          onSave={handleSaveInventory}
+        />
+      )}
 
-      <WarehouseModal
-        isOpen={warehouseModal.isOpen}
-        mode={warehouseModal.mode}
-        warehouse={warehouseModal.warehouse}
-        onClose={() => setWarehouseModal({ isOpen: false, mode: 'add', warehouse: null })}
-        onSave={handleSaveWarehouse}
-      />
+      {warehouseModal.isOpen && (
+        <WarehouseModal
+          key={warehouseModal.warehouse?._id || `wh-modal-${warehouseModal.mode}`}
+          isOpen={warehouseModal.isOpen}
+          mode={warehouseModal.mode}
+          warehouse={warehouseModal.warehouse}
+          onClose={() => setWarehouseModal({ isOpen: false, mode: 'add', warehouse: null })}
+          onSave={handleSaveWarehouse}
+        />
+      )}
 
-      <ReceivingModal
-        isOpen={receivingModal.isOpen}
-        mode={receivingModal.mode}
-        record={receivingModal.record}
-        warehousesList={warehouses}
-        onClose={() => setReceivingModal({ isOpen: false, mode: 'view', record: null })}
-        onSave={handleUpdateCollection}
-      />
+      {receivingModal.isOpen && (
+        <ReceivingModal
+          key={receivingModal.record?._id || receivingModal.record?.recordId || `rec-modal-${receivingModal.mode}`}
+          isOpen={receivingModal.isOpen}
+          mode={receivingModal.mode}
+          record={receivingModal.record}
+          warehousesList={warehouses}
+          onClose={() => setReceivingModal({ isOpen: false, mode: 'view', record: null })}
+          onSave={handleUpdateCollection}
+        />
+      )}
 
       <ConfirmDialog
         isOpen={confirmDialog.isOpen}

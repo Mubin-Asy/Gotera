@@ -5,7 +5,7 @@
  * and 'HTML5 Design Patterns'
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { User, Lock, Eye, EyeOff, ArrowLeft, Leaf } from 'lucide-react';
 
 export default function SignIn({ onLogin, onSwitchToRegister, onBackToHome }) {
@@ -48,16 +48,6 @@ export default function SignIn({ onLogin, onSwitchToRegister, onBackToHome }) {
 
   return (
     <div className="auth-wrapper" role="main">
-      <button
-        type="button"
-        className="back-to-app-btn"
-        onClick={onBackToHome}
-        aria-label="Back to Home Page"
-      >
-        <ArrowLeft size={16} />
-        <span>Back to Home</span>
-      </button>
-
       {/* Left Hero Pane with Agricultural Aesthetic */}
       <section className="auth-hero-pane" aria-label="Gotera Mission">
         <div className="auth-hero-top">
@@ -199,14 +189,25 @@ export default function SignIn({ onLogin, onSwitchToRegister, onBackToHome }) {
               </a>
             </div>
 
-            {/* Sign In Button */}
-            <button
-              type="submit"
-              className="auth-submit-btn"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Signing In...' : 'Sign In'}
-            </button>
+            {/* Form Actions: Sign In & Back to Home */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', marginTop: '0.5rem' }}>
+              <button
+                type="submit"
+                className="auth-submit-btn"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Signing In...' : 'Sign In'}
+              </button>
+
+              <button
+                type="button"
+                className="auth-secondary-btn"
+                onClick={onBackToHome}
+              >
+                <ArrowLeft size={16} />
+                <span>Back to Home</span>
+              </button>
+            </div>
           </form>
 
           {/* Create Account Switcher */}

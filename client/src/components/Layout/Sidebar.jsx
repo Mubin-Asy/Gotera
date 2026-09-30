@@ -1,6 +1,4 @@
-import React from 'react';
 import {
-  LayoutDashboard,
   Boxes,
   Warehouse,
   Truck,
@@ -8,9 +6,6 @@ import {
   AlertTriangle,
   FileBarChart,
   Users,
-  User,
-  Settings,
-  Sparkles,
   Home,
   LogOut
 } from 'lucide-react';

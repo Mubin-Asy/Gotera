@@ -4,7 +4,6 @@
  * and 'Learning React' (Banks & Porcello)
  */
 
-import React, { useState } from 'react';
 import { Search, Plus, Download, Eye, Pencil, Trash2, Filter } from 'lucide-react';
 import StatusBadge from '../Common/StatusBadge';
 
@@ -123,7 +122,7 @@ export default function InventoryTable({
       {/* Semantic Accessible Data Table */}
       <div className="data-table-container">
         <table className="gotera-table">
-          <caption className="sr-only" style={{ display: 'none' }}>
+          <caption className="sr-only">
             National Reserve Food Inventory Items Listing
           </caption>
           <thead>

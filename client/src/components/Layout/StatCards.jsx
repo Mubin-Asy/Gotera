@@ -4,7 +4,6 @@
  * Reusable stat metric component displaying 4-card operational indicators
  */
 
-import React from 'react';
 import {
   Boxes,
   Database,

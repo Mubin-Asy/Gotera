@@ -4,7 +4,7 @@
  * Landing / Home Page matching the official design mockup
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Package,
   Building2,
@@ -13,13 +13,12 @@ import {
   Wheat,
   Soup,
   Boxes,
-  Sparkles,
-  ArrowRight,
-  Info,
+  ShieldCheck,
+  Building,
+  CheckCircle2,
   Phone,
   Mail,
-  ShieldCheck,
-  X
+  MapPin
 } from 'lucide-react';
 import heroImage from '../../assets/grain_warehouse_hero.jpg';
 
@@ -32,7 +31,6 @@ export default function LandingPage({
   stats
 }) {
   const [activeNav, setActiveNav] = useState('home');
-  const [showInfoModal, setShowInfoModal] = useState(null); // 'about' | 'contact' | null
 
   // Metric values (defaults match official screenshot)
   const wheatVolume = stats?.reservesByCrop?.wheat
@@ -59,11 +57,30 @@ export default function LandingPage({
     }
   };
 
+  const handleFeatureKeyDown = (e, targetTab) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleFeatureClick(targetTab);
+    }
+  };
+
+  const scrollToSection = (id) => {
+    setActiveNav(id);
+    if (id === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="landing-page">
       {/* 1. Top Navbar */}
       <header className="landing-navbar" role="banner">
-        <div className="landing-brand" onClick={() => setActiveNav('home')}>
+        <div className="landing-brand" onClick={() => scrollToSection('home')}>
           <div className="landing-brand-logo">
             {/* Gotera Droplet Emblem */}
             <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
@@ -89,14 +106,14 @@ export default function LandingPage({
           <span className="landing-brand-title">GOTERA</span>
         </div>
 
-        {/* Navigation Links */}
+        {/* Navigation Links: Home, About, Food Items, Contact */}
         <nav aria-label="Main Navigation">
           <ul className="landing-nav-links">
             <li>
               <button
                 type="button"
                 className={`landing-nav-link ${activeNav === 'home' ? 'active' : ''}`}
-                onClick={() => setActiveNav('home')}
+                onClick={() => scrollToSection('home')}
               >
                 Home
               </button>
@@ -105,7 +122,7 @@ export default function LandingPage({
               <button
                 type="button"
                 className={`landing-nav-link ${activeNav === 'about' ? 'active' : ''}`}
-                onClick={() => setShowInfoModal('about')}
+                onClick={() => scrollToSection('about')}
               >
                 About
               </button>
@@ -122,26 +139,8 @@ export default function LandingPage({
             <li>
               <button
                 type="button"
-                className={`landing-nav-link ${activeNav === 'warehouses' ? 'active' : ''}`}
-                onClick={() => handleFeatureClick('warehouses')}
-              >
-                Warehouses
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
-                className={`landing-nav-link ${activeNav === 'reports' ? 'active' : ''}`}
-                onClick={() => handleFeatureClick('reports')}
-              >
-                Reports
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
                 className={`landing-nav-link ${activeNav === 'contact' ? 'active' : ''}`}
-                onClick={() => setShowInfoModal('contact')}
+                onClick={() => scrollToSection('contact')}
               >
                 Contact
               </button>
@@ -253,6 +252,7 @@ export default function LandingPage({
           <div
             className="feature-card"
             onClick={() => handleFeatureClick('receiving')}
+            onKeyDown={(e) => handleFeatureKeyDown(e, 'receiving')}
             role="button"
             tabIndex={0}
             aria-label="Food Collection - Record incoming food supplies"
@@ -268,6 +268,7 @@ export default function LandingPage({
           <div
             className="feature-card"
             onClick={() => handleFeatureClick('warehouses')}
+            onKeyDown={(e) => handleFeatureKeyDown(e, 'warehouses')}
             role="button"
             tabIndex={0}
             aria-label="Storage Management - Manage warehouse stock"
@@ -283,6 +284,7 @@ export default function LandingPage({
           <div
             className="feature-card"
             onClick={() => handleFeatureClick('distribution')}
+            onKeyDown={(e) => handleFeatureKeyDown(e, 'distribution')}
             role="button"
             tabIndex={0}
             aria-label="Distribution - Track outgoing supplies"
@@ -298,6 +300,7 @@ export default function LandingPage({
           <div
             className="feature-card"
             onClick={() => handleFeatureClick('reports')}
+            onKeyDown={(e) => handleFeatureKeyDown(e, 'reports')}
             role="button"
             tabIndex={0}
             aria-label="Reports - View inventory and distribution data"
@@ -340,7 +343,6 @@ export default function LandingPage({
             {/* Metric 3: Maize */}
             <div className="overview-metric-card">
               <div className="overview-icon-circle overview-icon-maize" aria-hidden="true">
-                {/* Corn / Maize icon representation */}
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 2a5 5 0 0 0-5 5v8a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z" />
                   <path d="M7 10h10" />
@@ -366,9 +368,92 @@ export default function LandingPage({
             </div>
           </div>
         </section>
+
+        {/* 5. In-Page About Section (Smoothly scrolled to when About is clicked) */}
+        <section id="about" className="landing-about-section" aria-label="About Gotera System">
+          <div className="about-header">
+            <span className="about-badge">About GOTERA</span>
+            <h2 className="about-title">National Emergency Food Reserve System</h2>
+            <p className="about-description">
+              GOTERA is Ethiopia's dedicated national food reserve infrastructure, built to safeguard national food security, coordinate emergency food relief, and ensure strategic agricultural buffer stocks across regional hubs.
+            </p>
+          </div>
+
+          <div className="about-pillars-grid">
+            <div className="about-pillar-card">
+              <div className="pillar-icon-box">
+                <ShieldCheck size={24} />
+              </div>
+              <h3 className="pillar-title">Strategic Crop Reserves</h3>
+              <p className="pillar-text">
+                Continuous monitoring of over 60,000 metric tons of wheat, rice, maize, teff, and emergency pulses stored in state-of-the-art regional grain silos.
+              </p>
+            </div>
+
+            <div className="about-pillar-card">
+              <div className="pillar-icon-box">
+                <Building size={24} />
+              </div>
+              <h3 className="pillar-title">Multi-Hub Network</h3>
+              <p className="pillar-text">
+                Synchronized warehouse operations spanning Adama, Mekelle, Bahir Dar, Gambella, Dire Dawa, Hawassa, Kombolcha, and Jigjiga.
+              </p>
+            </div>
+
+            <div className="about-pillar-card">
+              <div className="pillar-icon-box">
+                <CheckCircle2 size={24} />
+              </div>
+              <h3 className="pillar-title">Verified Quality Control</h3>
+              <p className="pillar-text">
+                Rigorous inspection protocols verifying moisture, packaging, and shelf-life readiness prior to intake and humanitarian dispatch.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. In-Page Contact Section (Smoothly scrolled to when Contact is clicked) */}
+        <section id="contact" className="landing-contact-section" aria-label="Contact Information">
+          <div className="contact-header">
+            <span className="contact-badge">Official Contact</span>
+            <h2 className="contact-title">National Reserve Coordination Agency</h2>
+            <p className="contact-subtitle">
+              Reach out for inter-agency coordination, emergency food relief allocations, or facility inspections.
+            </p>
+          </div>
+
+          <div className="contact-grid">
+            <div className="contact-card">
+              <MapPin className="contact-icon" size={24} />
+              <h3 className="contact-card-title">Headquarters</h3>
+              <p className="contact-card-detail">
+                National Disaster Risk Management Commission<br />
+                Addis Ababa, Ethiopia
+              </p>
+            </div>
+
+            <div className="contact-card">
+              <Phone className="contact-icon" size={24} />
+              <h3 className="contact-card-title">Direct Inquiries & Hotline</h3>
+              <p className="contact-card-detail">
+                Toll-Free Emergency: <strong>833</strong><br />
+                Office: +251 11 551 7000
+              </p>
+            </div>
+
+            <div className="contact-card">
+              <Mail className="contact-icon" size={24} />
+              <h3 className="contact-card-title">Official Correspondence</h3>
+              <p className="contact-card-detail">
+                reserves@gotera.gov.et<br />
+                coordination@gotera.gov.et
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
 
-      {/* 5. Footer */}
+      {/* 7. Footer */}
       <footer className="landing-footer">
         <div className="footer-left">
           <div className="landing-brand-logo" aria-hidden="true">
@@ -385,13 +470,13 @@ export default function LandingPage({
 
         <div className="footer-right">
           <div className="footer-links">
-            <button type="button" className="footer-link" onClick={() => setActiveNav('home')}>
+            <button type="button" className="footer-link" onClick={() => scrollToSection('home')}>
               Home
             </button>
-            <button type="button" className="footer-link" onClick={() => setShowInfoModal('about')}>
+            <button type="button" className="footer-link" onClick={() => scrollToSection('about')}>
               About
             </button>
-            <button type="button" className="footer-link" onClick={() => setShowInfoModal('contact')}>
+            <button type="button" className="footer-link" onClick={() => scrollToSection('contact')}>
               Contact
             </button>
           </div>
@@ -403,86 +488,6 @@ export default function LandingPage({
           </div>
         </div>
       </footer>
-
-      {/* Optional About Modal */}
-      {showInfoModal === 'about' && (
-        <div className="modal-backdrop" onClick={() => setShowInfoModal(null)}>
-          <div className="modal-dialog" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '580px' }}>
-            <div className="modal-header">
-              <h2 className="modal-title">About GOTERA Food Reserve System</h2>
-              <button
-                type="button"
-                className="btn-icon"
-                onClick={() => setShowInfoModal(null)}
-                aria-label="Close dialog"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            <div className="modal-body" style={{ lineHeight: '1.6', fontSize: '0.9rem' }}>
-              <p style={{ marginBottom: '1rem' }}>
-                <strong>GOTERA</strong> is Ethiopia's National Emergency Food Reserve Management Platform, engineered to guarantee transparent monitoring of strategic grain reserves, rapid disaster relief distribution, and silo capacity optimization.
-              </p>
-              <div style={{ background: '#f0fdf4', padding: '1rem', borderRadius: '12px', border: '1px solid #bbf7d0', marginBottom: '1rem' }}>
-                <h4 style={{ color: '#047857', marginBottom: '0.35rem', fontWeight: '700' }}>Strategic Mandate</h4>
-                <ul style={{ paddingLeft: '1.25rem', color: '#166534' }}>
-                  <li>Maintain 60,000+ metric tons of strategic cereal reserves.</li>
-                  <li>Real-time inventory synchronization across 8 major regional hubs.</li>
-                  <li>Automated quality inspection clearance and tracking.</li>
-                </ul>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-primary" onClick={() => setShowInfoModal(null)}>
-                Got it
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Optional Contact Modal */}
-      {showInfoModal === 'contact' && (
-        <div className="modal-backdrop" onClick={() => setShowInfoModal(null)}>
-          <div className="modal-dialog" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '520px' }}>
-            <div className="modal-header">
-              <h2 className="modal-title">National Food Reserve Contact</h2>
-              <button
-                type="button"
-                className="btn-icon"
-                onClick={() => setShowInfoModal(null)}
-                aria-label="Close dialog"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            <div className="modal-body" style={{ lineHeight: '1.6', fontSize: '0.9rem' }}>
-              <p style={{ marginBottom: '1rem', color: 'var(--color-text-secondary)' }}>
-                For technical support, emergency requisitions, or donor coordination, reach out to the National Agency headquarters:
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <Building2 size={18} color="#059669" />
-                  <span>National Disaster Risk Management Commission, Addis Ababa, Ethiopia</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <Phone size={18} color="#059669" />
-                  <span>+251 11 551 7000 / Toll Free: 833</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <Mail size={18} color="#059669" />
-                  <span>reserves@gotera.gov.et</span>
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-primary" onClick={() => setShowInfoModal(null)}>
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -387,6 +387,179 @@
   font-weight: 500;
 }
 
+/* 5.5 In-Page About Section */
+.landing-about-section {
+  scroll-margin-top: 80px;
+  background: #ffffff;
+  border: 1px solid #edf2ee;
+  border-radius: 24px;
+  padding: 3rem 3.5rem;
+  margin-bottom: 3.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+}
+
+.about-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 2.5rem auto;
+}
+
+.about-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #d8f3e5;
+  color: #00875a;
+  padding: 0.35rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.about-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0b3b2f;
+  margin-bottom: 0.85rem;
+  line-height: 1.25;
+}
+
+.about-description {
+  font-size: 0.95rem;
+  color: #526059;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.about-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.about-pillar-card {
+  background: #f8faf8;
+  border: 1px solid #e2ebe5;
+  border-radius: 16px;
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.about-pillar-card:hover {
+  transform: translateY(-2px);
+  border-color: #a7d9c4;
+}
+
+.pillar-icon-box {
+  width: 44px;
+  height: 44px;
+  background-color: #e6f7ef;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00875a;
+  margin-bottom: 1rem;
+}
+
+.pillar-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #141e1a;
+  margin-bottom: 0.5rem;
+}
+
+.pillar-text {
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* 5.6 In-Page Contact Section */
+.landing-contact-section {
+  scroll-margin-top: 80px;
+  background: linear-gradient(135deg, #07352a 0%, #0d4a3b 100%);
+  border-radius: 24px;
+  padding: 3rem 3.5rem;
+  color: #ffffff;
+  margin-bottom: 3.5rem;
+  box-shadow: 0 8px 24px rgba(7, 53, 42, 0.15);
+}
+
+.contact-header {
+  margin-bottom: 2rem;
+}
+
+.contact-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: rgba(0, 196, 140, 0.2);
+  color: #34d399;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.contact-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.contact-subtitle {
+  color: #a3bfb5;
+  font-size: 0.9rem;
+  margin: 0;
+  max-width: 600px;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.contact-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.contact-icon {
+  color: #34d399;
+  margin-bottom: 0.75rem;
+}
+
+.contact-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.35rem;
+}
+
+.contact-card-detail {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0;
+}
+
 /* 6. Footer */
 .landing-footer {
   background-color: #064032;
@@ -448,6 +621,7 @@
 
 .footer-copyright {
   color: #94a3b8;
+
   font-size: 0.8125rem;
 }
 

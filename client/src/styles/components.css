@@ -616,7 +616,8 @@
   padding: 1rem;
 }
 
-.modal-content {
+.modal-content,
+.modal-dialog {
   background-color: var(--color-bg-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-dropdown);

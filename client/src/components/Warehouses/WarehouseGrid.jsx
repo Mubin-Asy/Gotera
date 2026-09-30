@@ -4,8 +4,7 @@
  * Faithful visual match for Gotera Warehouses management view
  */
 
-import React from 'react';
-import { MapPin, Plus, Map, Eye, Pencil, Trash2, ShieldCheck } from 'lucide-react';
+import { MapPin, Plus, Map, Eye, Pencil, Trash2 } from 'lucide-react';
 import StatusBadge from '../Common/StatusBadge';
 
 export default function WarehouseGrid({
@@ -16,8 +15,8 @@ export default function WarehouseGrid({
   onViewWarehouse,
 }) {
   const getCapacityColorClass = (percent) => {
-    if (percent >= 90) return 'amber';
     if (percent >= 95) return 'red';
+    if (percent >= 85) return 'amber';
     return 'green';
   };
 
@@ -27,7 +26,7 @@ export default function WarehouseGrid({
       <div className="page-title-row" style={{ marginBottom: '1.25rem' }}>
         <div>
           <h2 className="page-headline" style={{ fontSize: '1.25rem' }}>Warehouses</h2>
-          <p className="page-subheadline">128 facilities across 11 regions</p>
+          <p className="page-subheadline">{warehouses.length} strategic reserve facilities nationwide</p>
         </div>
 
         <div className="page-actions-group">

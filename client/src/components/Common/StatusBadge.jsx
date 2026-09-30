@@ -4,7 +4,6 @@
  * and 'HTML5 Design Patterns'
  */
 
-import React from 'react';
 
 export default function StatusBadge({ status }) {
   const getBadgeClass = (s) => {

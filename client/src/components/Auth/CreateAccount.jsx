@@ -5,7 +5,7 @@
  * and 'HTML5 Design Patterns'
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { User, Mail, Phone, Building2, Briefcase, Lock, ArrowLeft, Leaf } from 'lucide-react';
 
 export default function CreateAccount({ onRegister, onSwitchToLogin, onBackToHome }) {
@@ -61,16 +61,6 @@ export default function CreateAccount({ onRegister, onSwitchToLogin, onBackToHom
 
   return (
     <div className="auth-wrapper" role="main">
-      <button
-        type="button"
-        className="back-to-app-btn"
-        onClick={onBackToHome}
-        aria-label="Back to Home Page"
-      >
-        <ArrowLeft size={16} />
-        <span>Back to Home</span>
-      </button>
-
       {/* Left Hero Pane with Agricultural Aesthetic */}
       <section className="auth-hero-pane" aria-label="Create Account Introduction">
         <div className="auth-hero-top">
@@ -251,15 +241,25 @@ export default function CreateAccount({ onRegister, onSwitchToLogin, onBackToHom
               </div>
             </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="auth-submit-btn"
-              disabled={isLoading}
-              style={{ marginTop: '0.5rem' }}
-            >
-              {isLoading ? 'Creating Account...' : 'Create Account'}
-            </button>
+            {/* Submit & Back to Home Action Group */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', marginTop: '0.75rem' }}>
+              <button
+                type="submit"
+                className="auth-submit-btn"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Creating Account...' : 'Create Account'}
+              </button>
+
+              <button
+                type="button"
+                className="auth-secondary-btn"
+                onClick={onBackToHome}
+              >
+                <ArrowLeft size={16} />
+                <span>Back to Home</span>
+              </button>
+            </div>
           </form>
 
           {/* Switcher to Sign In */}

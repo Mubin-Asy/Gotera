@@ -4,26 +4,13 @@
  * Controlled modal for creating and updating regional storage facilities
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X, Warehouse, Check } from 'lucide-react';
 
 export default function WarehouseModal({ isOpen, mode = 'add', warehouse = null, onClose, onSave }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    region: 'Oromia Region',
-    totalCapacity: '',
-    currentStock: '',
-    unit: 't',
-    manager: '',
-    contact: '',
-    status: 'Operational',
-  });
-
-  const [errors, setErrors] = useState({});
-
-  useEffect(() => {
+  const getInitialFormData = () => {
     if (warehouse && (mode === 'edit' || mode === 'view')) {
-      setFormData({
+      return {
         name: warehouse.name || '',
         region: warehouse.region || 'Oromia Region',
         totalCapacity: warehouse.totalCapacity !== undefined ? String(warehouse.totalCapacity) : '',
@@ -32,21 +19,22 @@ export default function WarehouseModal({ isOpen, mode = 'add', warehouse = null,
         manager: warehouse.manager || '',
         contact: warehouse.contact || '',
         status: warehouse.status || 'Operational',
-      });
-    } else {
-      setFormData({
-        name: '',
-        region: 'Oromia Region',
-        totalCapacity: '',
-        currentStock: '0',
-        unit: 't',
-        manager: '',
-        contact: '',
-        status: 'Operational',
-      });
+      };
     }
-    setErrors({});
-  }, [warehouse, mode, isOpen]);
+    return {
+      name: '',
+      region: 'Oromia Region',
+      totalCapacity: '',
+      currentStock: '0',
+      unit: 't',
+      manager: '',
+      contact: '',
+      status: 'Operational',
+    };
+  };
+
+  const [formData, setFormData] = useState(getInitialFormData);
+  const [errors, setErrors] = useState({});
 
   if (!isOpen) return null;
 

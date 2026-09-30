@@ -4,35 +4,36 @@
  * Modal for editing collection records
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X, Truck, Check } from 'lucide-react';
 
 export default function ReceivingModal({ isOpen, mode = 'edit', record = null, warehousesList, onClose, onSave }) {
-  const [formData, setFormData] = useState({
-    recordId: '',
-    item: '',
-    quantity: '',
-    unit: 't',
-    source: '',
-    destinationWarehouse: '',
-    status: 'Pending Inspection',
-    notes: '',
-  });
-
-  useEffect(() => {
+  const getInitialFormData = () => {
     if (record) {
-      setFormData({
+      return {
         recordId: record.recordId || '',
         item: record.item || '',
         quantity: record.quantity !== undefined ? String(record.quantity) : '',
         unit: record.unit || 't',
         source: record.source || '',
-        destinationWarehouse: record.destinationWarehouse || '',
+        destinationWarehouse: record.destinationWarehouse || (warehousesList?.[0]?.name || 'Adama Central Warehouse'),
         status: record.status || 'Pending Inspection',
         notes: record.notes || '',
-      });
+      };
     }
-  }, [record, isOpen]);
+    return {
+      recordId: '',
+      item: '',
+      quantity: '',
+      unit: 't',
+      source: '',
+      destinationWarehouse: warehousesList?.[0]?.name || 'Adama Central Warehouse',
+      status: 'Pending Inspection',
+      notes: '',
+    };
+  };
+
+  const [formData, setFormData] = useState(getInitialFormData);
 
   if (!isOpen) return null;
 
@@ -55,6 +56,7 @@ export default function ReceivingModal({ isOpen, mode = 'edit', record = null, w
     });
   };
 
+  const units = ['t', 'Tonnes', 'kg', 'Kilograms', 'L', 'Litres', 'Bags', 'Cartons'];
   const statuses = ['Inspected', 'Received', 'Pending Inspection', 'Rejected / Damaged', 'Awaiting Arrival'];
 
   return (
@@ -78,8 +80,9 @@ export default function ReceivingModal({ isOpen, mode = 'edit', record = null, w
           <div className="modal-body">
             <div className="gotera-form">
               <div className="form-group">
-                <label className="form-label">Record ID</label>
+                <label htmlFor="recRecordId" className="form-label">Record ID</label>
                 <input
+                  id="recRecordId"
                   type="text"
                   className="form-input"
                   value={formData.recordId}
@@ -88,9 +91,10 @@ export default function ReceivingModal({ isOpen, mode = 'edit', record = null, w
               </div>
 
               <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label">Food Item</label>
+                <div className="form-group" style={{ flex: 2 }}>
+                  <label htmlFor="recItem" className="form-label">Food Item</label>
                   <input
+                    id="recItem"
                     type="text"
                     className="form-input"
                     value={formData.item}
@@ -100,9 +104,10 @@ export default function ReceivingModal({ isOpen, mode = 'edit', record = null, w
                   />
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Quantity</label>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label htmlFor="recQuantity" className="form-label">Quantity</label>
                   <input
+                    id="recQuantity"
                     type="number"
                     className="form-input"
                     value={formData.quantity}
@@ -111,11 +116,28 @@ export default function ReceivingModal({ isOpen, mode = 'edit', record = null, w
                     disabled={isViewMode}
                   />
                 </div>
+
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label htmlFor="recUnit" className="form-label">Unit</label>
+                  <select
+                    id="recUnit"
+                    name="unit"
+                    className="form-select"
+                    value={formData.unit}
+                    onChange={handleChange}
+                    disabled={isViewMode}
+                  >
+                    {units.map((u) => (
+                      <option key={u} value={u}>{u}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <div className="form-group">
-                <label className="form-label">Source / Donor</label>
+                <label htmlFor="recSource" className="form-label">Source / Donor</label>
                 <input
+                  id="recSource"
                   type="text"
                   className="form-input"
                   value={formData.source}
@@ -127,8 +149,9 @@ export default function ReceivingModal({ isOpen, mode = 'edit', record = null, w
 
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label">Destination Warehouse</label>
+                  <label htmlFor="recWarehouse" className="form-label">Destination Warehouse</label>
                   <select
+                    id="recWarehouse"
                     name="destinationWarehouse"
                     className="form-select"
                     value={formData.destinationWarehouse}
@@ -142,8 +165,9 @@ export default function ReceivingModal({ isOpen, mode = 'edit', record = null, w
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Shipment Status</label>
+                  <label htmlFor="recStatus" className="form-label">Shipment Status</label>
                   <select
+                    id="recStatus"
                     name="status"
                     className="form-select"
                     value={formData.status}
@@ -158,8 +182,9 @@ export default function ReceivingModal({ isOpen, mode = 'edit', record = null, w
               </div>
 
               <div className="form-group">
-                <label className="form-label">Inspection & Quality Notes</label>
+                <label htmlFor="recNotes" className="form-label">Inspection & Quality Notes</label>
                 <textarea
+                  id="recNotes"
                   name="notes"
                   rows="2"
                   className="form-textarea"
@@ -178,7 +203,7 @@ export default function ReceivingModal({ isOpen, mode = 'edit', record = null, w
             {!isViewMode && (
               <button type="submit" className="btn btn-primary">
                 <Check size={16} />
-                <span>Save Record</span>
+                <span>Update Record</span>
               </button>
             )}
           </div>

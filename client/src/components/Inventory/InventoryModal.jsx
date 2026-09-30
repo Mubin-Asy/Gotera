@@ -4,49 +4,45 @@
  * and 'HTML5 Design Patterns'
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X, Package, Check } from 'lucide-react';
 
+const formatDateForInput = (d) => {
+  if (!d) return '';
+  const dt = new Date(d);
+  return !isNaN(dt.getTime()) ? dt.toISOString().slice(0, 10) : '';
+};
+
 export default function InventoryModal({ isOpen, mode = 'add', item = null, warehousesList, onClose, onSave }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    category: 'Cereals',
-    subCategory: '',
-    quantity: '',
-    unit: 't',
-    warehouse: 'Adama Central',
-    status: 'In Stock',
-    notes: '',
-  });
-
-  const [errors, setErrors] = useState({});
-
-  useEffect(() => {
+  const getInitialFormData = () => {
     if (item && (mode === 'edit' || mode === 'view')) {
-      setFormData({
+      return {
         name: item.name || '',
         category: item.category || 'Cereals',
         subCategory: item.subCategory || '',
         quantity: item.quantity !== undefined ? String(item.quantity) : '',
         unit: item.unit || 't',
-        warehouse: item.warehouse || (warehousesList?.[0]?.name || 'Adama Central'),
+        warehouse: item.warehouse || (warehousesList?.[0]?.name || 'Adama Central Warehouse'),
         status: item.status || 'In Stock',
+        expiryDate: formatDateForInput(item.expiryDate),
         notes: item.notes || '',
-      });
-    } else {
-      setFormData({
-        name: '',
-        category: 'Cereals',
-        subCategory: '',
-        quantity: '',
-        unit: 't',
-        warehouse: warehousesList?.[0]?.name || 'Adama Central',
-        status: 'In Stock',
-        notes: '',
-      });
+      };
     }
-    setErrors({});
-  }, [item, mode, isOpen, warehousesList]);
+    return {
+      name: '',
+      category: 'Cereals',
+      subCategory: '',
+      quantity: '',
+      unit: 't',
+      warehouse: warehousesList?.[0]?.name || 'Adama Central Warehouse',
+      status: 'In Stock',
+      expiryDate: '',
+      notes: '',
+    };
+  };
+
+  const [formData, setFormData] = useState(getInitialFormData);
+  const [errors, setErrors] = useState({});
 
   if (!isOpen) return null;
 
@@ -71,9 +67,9 @@ export default function InventoryModal({ isOpen, mode = 'add', item = null, ware
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = 'Food item name is required';
     if (!formData.quantity || isNaN(Number(formData.quantity)) || Number(formData.quantity) < 0) {
-      newErrors.quantity = 'Valid positive quantity is required';
+      newErrors.quantity = 'Valid positive quantity required';
     }
-    if (!formData.warehouse) newErrors.warehouse = 'Warehouse facility is required';
+    if (!formData.warehouse) newErrors.warehouse = 'Select a warehouse location';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -83,13 +79,13 @@ export default function InventoryModal({ isOpen, mode = 'add', item = null, ware
     onSave({
       ...formData,
       quantity: Number(formData.quantity),
-      subCategory: formData.subCategory || formData.category,
+      expiryDate: formData.expiryDate ? new Date(formData.expiryDate) : undefined,
     });
   };
 
-  const categories = ['Cereals', 'Fats & Oils', 'Minerals', 'Supplementary', 'Pulses', 'Dairy', 'Tubers', 'Other'];
+  const categories = ['Cereals', 'Pulses', 'Fats & Oils', 'Minerals', 'Supplementary', 'Dairy'];
   const units = [
-    { value: 't', label: 'Tonnes (t)' },
+    { value: 't', label: 'Metric Tonnes (t)' },
     { value: 'kg', label: 'Kilograms (kg)' },
     { value: 'L', label: 'Litres (L)' },
     { value: 'bags', label: 'Bags' },
@@ -97,41 +93,67 @@ export default function InventoryModal({ isOpen, mode = 'add', item = null, ware
   ];
   const statuses = ['In Stock', 'Low Stock', 'Critical', 'Expiring Soon'];
 
+  const getTitle = () => {
+    if (mode === 'add') return 'Add Reserve Food Item';
+    if (mode === 'edit') return `Edit: ${item?.name || 'Food Item'}`;
+    return `Details: ${item?.name || 'Food Item'}`;
+  };
+
   return (
-    <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="inventory-modal-title">
-      <div className="modal-content">
+    <div className="modal-backdrop" onClick={onClose} role="presentation">
+      <div
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="inventoryModalTitle"
+      >
         {/* Modal Header */}
         <div className="modal-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-            <div style={{ padding: '0.4rem', backgroundColor: '#e6f8f1', borderRadius: '6px', color: '#059669' }}>
-              <Package size={18} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <div
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                backgroundColor: 'var(--color-brand-emerald-light)',
+                color: 'var(--color-brand-emerald-dark)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              aria-hidden="true"
+            >
+              <Package size={17} />
             </div>
-            <h3 id="inventory-modal-title" className="modal-title">
-              {mode === 'add' && 'Add New Food Reserve Item'}
-              {mode === 'edit' && 'Edit Food Reserve Record'}
-              {mode === 'view' && 'Food Reserve Item Details'}
-            </h3>
+            <h2 id="inventoryModalTitle" className="modal-title">{getTitle()}</h2>
           </div>
-          <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Close dialog">
+
+          <button
+            type="button"
+            className="modal-close-btn"
+            onClick={onClose}
+            aria-label="Close dialog"
+          >
             <X size={18} />
           </button>
         </div>
 
-        {/* Modal Form Body */}
+        {/* Modal Body / Form */}
         <form onSubmit={handleSubmit} noValidate>
           <div className="modal-body">
-            <div className="gotera-form">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {/* Item Name */}
               <div className="form-group">
                 <label htmlFor="itemName" className="form-label">
-                  Food Item Name <span style={{ color: '#dc2626' }}>*</span>
+                  Item Name <span style={{ color: '#dc2626' }}>*</span>
                 </label>
                 <input
                   id="itemName"
                   name="name"
                   type="text"
                   className="form-input"
-                  placeholder="e.g. Wheat Grain, White Rice, Cooking Oil"
+                  placeholder="e.g. Wheat Grain, Cooking Oil, Red Haricot Beans..."
                   value={formData.name}
                   onChange={handleChange}
                   disabled={isViewMode}
@@ -140,7 +162,7 @@ export default function InventoryModal({ isOpen, mode = 'add', item = null, ware
                 {errors.name && <span style={{ color: '#dc2626', fontSize: '0.75rem' }}>{errors.name}</span>}
               </div>
 
-              {/* Category & Subcategory Row */}
+              {/* Category & SubCategory Row */}
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="itemCategory" className="form-label">
@@ -154,22 +176,22 @@ export default function InventoryModal({ isOpen, mode = 'add', item = null, ware
                     onChange={handleChange}
                     disabled={isViewMode}
                   >
-                    {categories.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
+                    {categories.map((c) => (
+                      <option key={c} value={c}>{c}</option>
                     ))}
                   </select>
                 </div>
 
                 <div className="form-group">
                   <label htmlFor="itemSubCategory" className="form-label">
-                    Sub-Category / Variety
+                    Sub-Category / Type
                   </label>
                   <input
                     id="itemSubCategory"
                     name="subCategory"
                     type="text"
                     className="form-input"
-                    placeholder="e.g. Cereals, Milled"
+                    placeholder="e.g. Hard Red, Sunflower, CSB+..."
                     value={formData.subCategory}
                     onChange={handleChange}
                     disabled={isViewMode}
@@ -258,6 +280,22 @@ export default function InventoryModal({ isOpen, mode = 'add', item = null, ware
                 </div>
               </div>
 
+              {/* Expiry Date */}
+              <div className="form-group">
+                <label htmlFor="itemExpiryDate" className="form-label">
+                  Expiration / Best Before Date
+                </label>
+                <input
+                  id="itemExpiryDate"
+                  name="expiryDate"
+                  type="date"
+                  className="form-input"
+                  value={formData.expiryDate}
+                  onChange={handleChange}
+                  disabled={isViewMode}
+                />
+              </div>
+
               {/* Notes */}
               <div className="form-group">
                 <label htmlFor="itemNotes" className="form-label">
@@ -279,11 +317,18 @@ export default function InventoryModal({ isOpen, mode = 'add', item = null, ware
 
           {/* Modal Footer */}
           <div className="modal-footer">
-            <button type="button" className="btn btn-outline" onClick={onClose}>
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={onClose}
+            >
               {isViewMode ? 'Close' : 'Cancel'}
             </button>
             {!isViewMode && (
-              <button type="submit" className="btn btn-primary">
+              <button
+                type="submit"
+                className="btn btn-primary"
+              >
                 <Check size={16} />
                 <span>{mode === 'add' ? 'Save Item' : 'Update Item'}</span>
               </button>
