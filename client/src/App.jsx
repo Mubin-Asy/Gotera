@@ -15,6 +15,7 @@ import DistributionModal from './components/Distribution/DistributionModal';
 import EmergencyRequestsView from './components/Emergency/EmergencyRequestsView';
 import EmergencyModal from './components/Emergency/EmergencyModal';
 import ReportsAnalytics from './components/Reports/ReportsAnalytics';
+import AdminGovernanceView from './components/Admin/AdminGovernanceView';
 import SignIn from './components/Auth/SignIn';
 import CreateAccount from './components/Auth/CreateAccount';
 import ConfirmDialog from './components/Common/ConfirmDialog';
@@ -545,6 +546,59 @@ const initialEmergencyFallback = [
   }
 ];
 
+const initialUsersFallback = [
+  {
+    _id: 'usr_1',
+    fullName: 'Meron Kassa',
+    email: 'meron.kassa@gotera.gov.et',
+    phone: '+251 91 100 2030',
+    organization: 'National Food Reserve Agency',
+    role: 'Warehouse Manager',
+    status: 'Active',
+    avatar: 'MK'
+  },
+  {
+    _id: 'usr_2',
+    fullName: 'Abebe Bikila',
+    email: 'admin@gotera.gov.et',
+    phone: '+251 91 222 3344',
+    organization: 'Ministry of Agriculture',
+    role: 'Administrator',
+    status: 'Active',
+    avatar: 'AB'
+  },
+  {
+    _id: 'usr_3',
+    fullName: 'Sara Tesfaye',
+    email: 'coordinator@gotera.gov.et',
+    phone: '+251 93 444 5566',
+    organization: 'National Disaster Risk Management Commission',
+    role: 'Relief Coordinator',
+    status: 'Active',
+    avatar: 'ST'
+  },
+  {
+    _id: 'usr_4',
+    fullName: 'Dawit Haile',
+    email: 'dawit.haile@drc.gov.et',
+    phone: '+251 92 777 8899',
+    organization: 'Oromia Regional Disaster Office',
+    role: 'Relief Coordinator',
+    status: 'Pending Approval',
+    avatar: 'DH'
+  },
+  {
+    _id: 'usr_5',
+    fullName: 'Hiwot Tadesse',
+    email: 'hiwot.tadesse@grain.gov.et',
+    phone: '+251 91 333 4455',
+    organization: 'Adama Grain Silo Reserve',
+    role: 'Warehouse Manager',
+    status: 'Pending Approval',
+    avatar: 'HT'
+  }
+];
+
 export default function App() {
   // Authentication & View State: Always start on the Home page
   const [currentUser, setCurrentUser] = useState(null);
@@ -552,7 +606,6 @@ export default function App() {
   // Current view: 'home' | 'signin' | 'register' | 'dashboard'
   // Guaranteed to always start from the Home page
   const [currentView, setCurrentView] = useState('home');
-
 
   const [activeTab, setActiveTab] = useState('inventory');
 
@@ -562,6 +615,7 @@ export default function App() {
   const [collections, setCollections] = useState(initialCollectionsFallback);
   const [distributions, setDistributions] = useState(initialDistributionsFallback);
   const [emergencyRequests, setEmergencyRequests] = useState(initialEmergencyFallback);
+  const [usersList, setUsersList] = useState(initialUsersFallback);
   const [stats, setStats] = useState({
     inventory: {
       totalLineItems: '1,484',
@@ -608,13 +662,14 @@ export default function App() {
     let isMounted = true;
     async function loadData() {
       try {
-        const [invData, whData, colData, distData, emrData, statsData] = await Promise.all([
+        const [invData, whData, colData, distData, emrData, statsData, usersData] = await Promise.all([
           apiFetch('/inventory'),
           apiFetch('/warehouses'),
           apiFetch('/collections'),
           apiFetch('/distributions'),
           apiFetch('/emergency'),
           apiFetch('/stats/overview'),
+          apiFetch('/users'),
         ]);
 
         if (!isMounted) return;
@@ -624,6 +679,7 @@ export default function App() {
         if (distData?.success && distData.data?.length > 0) setDistributions(distData.data);
         if (emrData?.success && emrData.data?.length > 0) setEmergencyRequests(emrData.data);
         if (statsData?.success && statsData.data) setStats(statsData.data);
+        if (usersData?.success && usersData.data?.length > 0) setUsersList(usersData.data);
       } catch (err) {
         console.warn('API sync warning (using offline-safe store):', err.message);
       }
@@ -652,6 +708,15 @@ export default function App() {
     } catch {
       // storage quota / privacy mode safe
     }
+
+    if (data.user.role === 'Administrator') {
+      setActiveTab('approvals');
+    } else if (data.user.role === 'Relief Coordinator') {
+      setActiveTab('emergency');
+    } else {
+      setActiveTab('inventory');
+    }
+
     setCurrentView('dashboard');
   };
 
@@ -672,6 +737,17 @@ export default function App() {
     } catch {
       // safe
     }
+
+    if (data.user.role === 'Administrator') {
+      setActiveTab('approvals');
+    } else if (data.user.role === 'Relief Coordinator') {
+      setActiveTab('emergency');
+    } else {
+      setActiveTab('inventory');
+    }
+
+    setUsersList(prev => [data.user, ...prev]);
+
     setCurrentView('dashboard');
   };
 
@@ -683,6 +759,71 @@ export default function App() {
       // safe
     }
     setCurrentView('home');
+  };
+
+  // User Governance Actions for Administrator
+  const handleApproveUser = async (userId, assignedRole) => {
+    try {
+      await apiFetch(`/users/${userId}/approve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: assignedRole }),
+      });
+    } catch (e) {
+      console.warn('Fallback local approval:', e);
+    }
+    setUsersList(prev => prev.map(u =>
+      (u._id === userId || u.email === userId)
+        ? { ...u, status: 'Active', role: assignedRole }
+        : u
+    ));
+  };
+
+  const handleChangeUserRole = async (userId, newRole) => {
+    try {
+      await apiFetch(`/users/${userId}/role`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: newRole }),
+      });
+    } catch (e) {
+      console.warn('Fallback local role change:', e);
+    }
+    setUsersList(prev => prev.map(u =>
+      (u._id === userId || u.email === userId) ? { ...u, role: newRole } : u
+    ));
+  };
+
+  const handleToggleUserStatus = async (userId, newStatus) => {
+    try {
+      await apiFetch(`/users/${userId}/role`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+    } catch (e) {
+      console.warn('Fallback local status change:', e);
+    }
+    setUsersList(prev => prev.map(u =>
+      (u._id === userId || u.email === userId) ? { ...u, status: newStatus } : u
+    ));
+  };
+
+  const handleDeleteUser = async (userId) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Remove User Account',
+      message: 'Are you sure you want to remove this account from the GOTERA system?',
+      onConfirm: async () => {
+        try {
+          await apiFetch(`/users/${userId}`, { method: 'DELETE' });
+        } catch (e) {
+          console.warn('Fallback local deletion:', e);
+        }
+        setUsersList(prev => prev.filter(u => u._id !== userId && u.email !== userId));
+        setConfirmDialog({ isOpen: false, title: '', message: '', onConfirm: null });
+      }
+    });
   };
 
   // 3. CRUD Operations - Inventory (Crops)
@@ -1107,6 +1248,7 @@ export default function App() {
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onLogout={handleLogout}
+        currentUser={currentUser}
       />
 
       {/* 2. Main Content Landmark */}
@@ -1120,13 +1262,28 @@ export default function App() {
         />
 
         <div className="page-container">
-          {/* Top 4 Stat Indicator Cards (shown for inventory, warehouses, receiving) */}
-          {(activeTab === 'inventory' || activeTab === 'warehouses' || activeTab === 'receiving') && (
+          {/* Top 4 Stat Indicator Cards (shown for warehouse managers on inventory, warehouses, receiving) */}
+          {(currentUser?.role === 'Warehouse Manager' || !currentUser?.role) && (activeTab === 'inventory' || activeTab === 'warehouses' || activeTab === 'receiving') && (
             <StatCards activeTab={activeTab} stats={stats} />
           )}
 
-          {/* View Tab 1: Food Inventory (Crops) View */}
-          {activeTab === 'inventory' && (
+          {/* View Tab: Administrator User Governance & Account Approvals */}
+          {(currentUser?.role === 'Administrator' || activeTab === 'approvals' || activeTab === 'system') && (
+            <AdminGovernanceView
+              usersList={usersList}
+              onApproveUser={handleApproveUser}
+              onChangeRole={handleChangeUserRole}
+              onToggleStatus={handleToggleUserStatus}
+              onDeleteUser={handleDeleteUser}
+              onRefresh={async () => {
+                const u = await apiFetch('/users');
+                if (u?.success && u.data?.length > 0) setUsersList(u.data);
+              }}
+            />
+          )}
+
+          {/* View Tab 1: Food Inventory (Crops) View (Warehouse Manager) */}
+          {currentUser?.role !== 'Administrator' && activeTab === 'inventory' && (
             <>
               <div className="page-title-row">
                 <div>
@@ -1154,19 +1311,26 @@ export default function App() {
             </>
           )}
 
-          {/* View Tab 2: Warehouses (Management) View */}
-          {activeTab === 'warehouses' && (
-            <WarehouseGrid
-              warehouses={filteredWarehouses}
-              onAddWarehouse={() => setWarehouseModal({ isOpen: true, mode: 'add', warehouse: null })}
-              onEditWarehouse={(wh) => setWarehouseModal({ isOpen: true, mode: 'edit', warehouse: wh })}
-              onViewWarehouse={(wh) => setWarehouseModal({ isOpen: true, mode: 'view', warehouse: wh })}
-              onDeleteWarehouse={handleDeleteWarehouse}
-            />
+          {/* View Tab 2: Warehouses (Management & Oversight) View */}
+          {currentUser?.role !== 'Administrator' && activeTab === 'warehouses' && (
+            <>
+              {currentUser?.role === 'Relief Coordinator' && (
+                <div style={{ marginBottom: '1.25rem', padding: '0.85rem 1.15rem', background: '#e0f2fe', borderRadius: '8px', border: '1px solid #bae6fd', color: '#0369a1', fontSize: '0.85rem' }}>
+                  <strong>National Relief Oversight:</strong> Monitoring regional silo capacities and available reserves to coordinate emergency dispatches.
+                </div>
+              )}
+              <WarehouseGrid
+                warehouses={filteredWarehouses}
+                onAddWarehouse={() => setWarehouseModal({ isOpen: true, mode: 'add', warehouse: null })}
+                onEditWarehouse={(wh) => setWarehouseModal({ isOpen: true, mode: 'edit', warehouse: wh })}
+                onViewWarehouse={(wh) => setWarehouseModal({ isOpen: true, mode: 'view', warehouse: wh })}
+                onDeleteWarehouse={handleDeleteWarehouse}
+              />
+            </>
           )}
 
-          {/* View Tab 3: Receiving / Food Collection View */}
-          {activeTab === 'receiving' && (
+          {/* View Tab 3: Receiving / Food Collection View (Warehouse Manager) */}
+          {currentUser?.role !== 'Administrator' && activeTab === 'receiving' && (
             <>
               <div className="page-title-row">
                 <div>
@@ -1199,8 +1363,8 @@ export default function App() {
             </>
           )}
 
-          {/* View Tab 4: Distribution Module */}
-          {activeTab === 'distribution' && (
+          {/* View Tab 4: Distribution Module (Relief Coordinator) */}
+          {currentUser?.role !== 'Administrator' && activeTab === 'distribution' && (
             <DistributionView
               distributions={distributions}
               warehousesList={warehouses}
@@ -1212,8 +1376,8 @@ export default function App() {
             />
           )}
 
-          {/* View Tab 5: Emergency Requests Module */}
-          {activeTab === 'emergency' && (
+          {/* View Tab 5: Emergency Requests Module (Relief Coordinator) */}
+          {currentUser?.role !== 'Administrator' && activeTab === 'emergency' && (
             <EmergencyRequestsView
               requests={emergencyRequests}
               warehousesList={warehouses}
@@ -1225,8 +1389,8 @@ export default function App() {
             />
           )}
 
-          {/* View Tab 6: Reports & Analytics Module */}
-          {activeTab === 'reports' && (
+          {/* View Tab 6: Reports & Analytics Module (Relief Coordinator) */}
+          {currentUser?.role !== 'Administrator' && activeTab === 'reports' && (
             <ReportsAnalytics
               inventoryItems={inventoryItems}
               warehouses={warehouses}

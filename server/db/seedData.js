@@ -320,6 +320,7 @@ const seedUsers = [
     phone: '+251 91 100 2030',
     organization: 'National Food Reserve Agency',
     role: 'Warehouse Manager',
+    status: 'Active',
     password: 'Password123!',
     avatar: 'MK'
   },
@@ -329,6 +330,7 @@ const seedUsers = [
     phone: '+251 91 222 3344',
     organization: 'Ministry of Agriculture',
     role: 'Administrator',
+    status: 'Active',
     password: 'Admin123!',
     avatar: 'AB'
   },
@@ -338,8 +340,29 @@ const seedUsers = [
     phone: '+251 93 444 5566',
     organization: 'National Disaster Risk Management Commission',
     role: 'Relief Coordinator',
+    status: 'Active',
     password: 'Coordinator123!',
     avatar: 'ST'
+  },
+  {
+    fullName: 'Dawit Haile',
+    email: 'dawit.haile@drc.gov.et',
+    phone: '+251 92 777 8899',
+    organization: 'Oromia Regional Disaster Office',
+    role: 'Relief Coordinator',
+    status: 'Pending Approval',
+    password: 'Dawit123!',
+    avatar: 'DH'
+  },
+  {
+    fullName: 'Hiwot Tadesse',
+    email: 'hiwot.tadesse@grain.gov.et',
+    phone: '+251 91 333 4455',
+    organization: 'Adama Grain Silo Reserve',
+    role: 'Warehouse Manager',
+    status: 'Pending Approval',
+    password: 'Hiwot123!',
+    avatar: 'HT'
   }
 ];
 

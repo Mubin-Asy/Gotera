@@ -43,6 +43,7 @@ exports.login = async (req, res, next) => {
           fullName: user.fullName,
           email: user.email,
           role: user.role,
+          status: user.status || 'Active',
           organization: user.organization,
           avatar: user.avatar
         }
@@ -69,6 +70,7 @@ exports.login = async (req, res, next) => {
         fullName: user.fullName,
         email: user.email,
         role: user.role,
+        status: user.status || 'Active',
         organization: user.organization,
         avatar: user.avatar || 'MK'
       }
@@ -98,6 +100,7 @@ exports.register = async (req, res, next) => {
       phone: phone || '',
       organization: organization || 'National Food Reserve System',
       role: role || 'Warehouse Manager',
+      status: role === 'Administrator' ? 'Active' : 'Pending Approval',
       password,
       avatar,
     };
@@ -115,6 +118,7 @@ exports.register = async (req, res, next) => {
           fullName: user.fullName,
           email: user.email,
           role: user.role,
+          status: user.status,
           organization: user.organization,
           avatar: user.avatar
         }
@@ -141,6 +145,7 @@ exports.register = async (req, res, next) => {
         fullName: newDoc.fullName,
         email: newDoc.email,
         role: newDoc.role,
+        status: newDoc.status,
         organization: newDoc.organization,
         avatar: newDoc.avatar
       }

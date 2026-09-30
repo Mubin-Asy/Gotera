@@ -35,8 +35,13 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['Warehouse Manager', 'Relief Coordinator', 'Logistics Officer', 'Quality Inspector', 'Administrator'],
+    enum: ['Warehouse Manager', 'Relief Coordinator', 'Administrator'],
     default: 'Warehouse Manager',
+  },
+  status: {
+    type: String,
+    enum: ['Active', 'Pending Approval', 'Suspended'],
+    default: 'Active',
   },
   password: {
     type: String,

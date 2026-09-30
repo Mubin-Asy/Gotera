@@ -15,6 +15,7 @@ const distributionsRouter = require('./api/distributions');
 const emergencyRouter = require('./api/emergency');
 const statsRouter = require('./api/stats');
 const authRouter = require('./api/auth');
+const usersRouter = require('./api/users');
 
 router.use('/inventory', inventoryRouter);
 router.use('/warehouses', warehousesRouter);
@@ -23,6 +24,7 @@ router.use('/distributions', distributionsRouter);
 router.use('/emergency', emergencyRouter);
 router.use('/stats', statsRouter);
 router.use('/auth', authRouter);
+router.use('/users', usersRouter);
 
 // Health check endpoint
 router.get('/health', (req, res) => {

@@ -45,6 +45,16 @@ export default function Header({
           title: 'Reports & Analytics',
           subtitle: 'National food balance sheets, supply forecasting & trends',
         };
+      case 'approvals':
+        return {
+          title: 'Account Governance & Approvals',
+          subtitle: 'Review incoming registrations and assign roles: Warehouse Manager or Relief Coordinator',
+        };
+      case 'system':
+        return {
+          title: 'Platform Infrastructure & Cloud Cluster',
+          subtitle: 'MongoDB Atlas connectivity, security policies, and system audit logs',
+        };
       default:
         return {
           title: 'National Reserve Dashboard',

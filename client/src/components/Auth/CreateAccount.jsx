@@ -25,8 +25,6 @@ export default function CreateAccount({ onRegister, onSwitchToLogin, onBackToHom
   const roles = [
     'Warehouse Manager',
     'Relief Coordinator',
-    'Logistics Officer',
-    'Quality Inspector',
     'Administrator'
   ];
 
