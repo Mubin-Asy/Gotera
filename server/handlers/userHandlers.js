@@ -13,19 +13,23 @@ exports.listUsers = async (req, res, next) => {
     const { role, status, search } = req.query;
 
     if (getIsConnected()) {
-      let query = {};
-      if (role && role !== 'All') query.role = role;
-      if (status && status !== 'All') query.status = status;
-      if (search) {
-        query.$or = [
-          { fullName: { $regex: search, $options: 'i' } },
-          { email: { $regex: search, $options: 'i' } },
-          { organization: { $regex: search, $options: 'i' } }
-        ];
-      }
+      try {
+        let query = {};
+        if (role && role !== 'All') query.role = role;
+        if (status && status !== 'All') query.status = status;
+        if (search) {
+          query.$or = [
+            { fullName: { $regex: search, $options: 'i' } },
+            { email: { $regex: search, $options: 'i' } },
+            { organization: { $regex: search, $options: 'i' } }
+          ];
+        }
 
-      const users = await User.find(query).select('-password').sort({ createdAt: -1 });
-      return res.status(200).json({ success: true, count: users.length, data: users });
+        const users = await User.find(query).select('-password').sort({ createdAt: -1 });
+        return res.status(200).json({ success: true, count: users.length, data: users });
+      } catch (mongoErr) {
+        console.warn('[User Handler] Falling back to memory store:', mongoErr.message);
+      }
     }
 
     let store = getMemoryStore().users || [];

@@ -22,32 +22,37 @@ exports.login = async (req, res, next) => {
     const cleanIdentity = email.toLowerCase().trim();
 
     if (getIsConnected()) {
-      const user = await User.findOne({
-        $or: [
-          { email: cleanIdentity },
-          { fullName: new RegExp(`^${email.trim()}$`, 'i') }
-        ]
-      });
-
-      if (!user || user.password !== password) {
-        return res.status(401).json({
-          success: false,
-          message: 'Invalid email/username or password. Please verify credentials.'
+      try {
+        const user = await User.findOne({
+          $or: [
+            { email: cleanIdentity },
+            { fullName: new RegExp(`^${email.trim()}$`, 'i') }
+          ]
         });
-      }
 
-      return res.status(200).json({
-        success: true,
-        user: {
-          id: user._id,
-          fullName: user.fullName,
-          email: user.email,
-          role: user.role,
-          status: user.status || 'Active',
-          organization: user.organization,
-          avatar: user.avatar
+        if (!user || user.password !== password) {
+          return res.status(401).json({
+            success: false,
+            message: 'Invalid email/username or password. Please verify credentials.'
+          });
         }
-      });
+
+        return res.status(200).json({
+          success: true,
+          user: {
+            id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            role: user.role,
+            status: user.status || 'Active',
+            organization: user.organization,
+            avatar: user.avatar
+          }
+        });
+      } catch (mongoErr) {
+        console.warn('[Auth Handler] MongoDB query encountered network/TLS notice:', mongoErr.message);
+        // Seamlessly continue to resilient educational memory store
+      }
     }
 
     const store = getMemoryStore().users;

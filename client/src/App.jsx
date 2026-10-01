@@ -758,7 +758,7 @@ export default function App() {
     } catch {
       // safe
     }
-    setCurrentView('home');
+    setCurrentView('signin');
   };
 
   // User Governance Actions for Administrator
@@ -1256,19 +1256,18 @@ export default function App() {
         <Header
           activeTab={activeTab}
           currentUser={currentUser}
-          onLogout={handleLogout}
           searchQuery={globalSearch}
           onSearchChange={setGlobalSearch}
         />
 
         <div className="page-container">
-          {/* Top 4 Stat Indicator Cards (shown for warehouse managers on inventory, warehouses, receiving) */}
-          {(currentUser?.role === 'Warehouse Manager' || !currentUser?.role) && (activeTab === 'inventory' || activeTab === 'warehouses' || activeTab === 'receiving') && (
+          {/* Top 4 Stat Indicator Cards (shown for inventory, warehouses, receiving) */}
+          {(activeTab === 'inventory' || activeTab === 'warehouses' || activeTab === 'receiving') && (
             <StatCards activeTab={activeTab} stats={stats} />
           )}
 
-          {/* View Tab: Administrator User Governance & Account Approvals */}
-          {(currentUser?.role === 'Administrator' || activeTab === 'approvals' || activeTab === 'system') && (
+          {/* View Tab: Administrator User Governance & Approvals */}
+          {(activeTab === 'approvals' || activeTab === 'system') && (
             <AdminGovernanceView
               usersList={usersList}
               onApproveUser={handleApproveUser}
@@ -1282,8 +1281,8 @@ export default function App() {
             />
           )}
 
-          {/* View Tab 1: Food Inventory (Crops) View (Warehouse Manager) */}
-          {currentUser?.role !== 'Administrator' && activeTab === 'inventory' && (
+          {/* View Tab 1: Food Inventory (Crops) View */}
+          {activeTab === 'inventory' && (
             <>
               <div className="page-title-row">
                 <div>
@@ -1311,26 +1310,19 @@ export default function App() {
             </>
           )}
 
-          {/* View Tab 2: Warehouses (Management & Oversight) View */}
-          {currentUser?.role !== 'Administrator' && activeTab === 'warehouses' && (
-            <>
-              {currentUser?.role === 'Relief Coordinator' && (
-                <div style={{ marginBottom: '1.25rem', padding: '0.85rem 1.15rem', background: '#e0f2fe', borderRadius: '8px', border: '1px solid #bae6fd', color: '#0369a1', fontSize: '0.85rem' }}>
-                  <strong>National Relief Oversight:</strong> Monitoring regional silo capacities and available reserves to coordinate emergency dispatches.
-                </div>
-              )}
-              <WarehouseGrid
-                warehouses={filteredWarehouses}
-                onAddWarehouse={() => setWarehouseModal({ isOpen: true, mode: 'add', warehouse: null })}
-                onEditWarehouse={(wh) => setWarehouseModal({ isOpen: true, mode: 'edit', warehouse: wh })}
-                onViewWarehouse={(wh) => setWarehouseModal({ isOpen: true, mode: 'view', warehouse: wh })}
-                onDeleteWarehouse={handleDeleteWarehouse}
-              />
-            </>
+          {/* View Tab 2: Warehouses (Management) View */}
+          {activeTab === 'warehouses' && (
+            <WarehouseGrid
+              warehouses={filteredWarehouses}
+              onAddWarehouse={() => setWarehouseModal({ isOpen: true, mode: 'add', warehouse: null })}
+              onEditWarehouse={(wh) => setWarehouseModal({ isOpen: true, mode: 'edit', warehouse: wh })}
+              onViewWarehouse={(wh) => setWarehouseModal({ isOpen: true, mode: 'view', warehouse: wh })}
+              onDeleteWarehouse={handleDeleteWarehouse}
+            />
           )}
 
-          {/* View Tab 3: Receiving / Food Collection View (Warehouse Manager) */}
-          {currentUser?.role !== 'Administrator' && activeTab === 'receiving' && (
+          {/* View Tab 3: Receiving / Food Collection View */}
+          {activeTab === 'receiving' && (
             <>
               <div className="page-title-row">
                 <div>
@@ -1363,8 +1355,8 @@ export default function App() {
             </>
           )}
 
-          {/* View Tab 4: Distribution Module (Relief Coordinator) */}
-          {currentUser?.role !== 'Administrator' && activeTab === 'distribution' && (
+          {/* View Tab 4: Distribution Module */}
+          {activeTab === 'distribution' && (
             <DistributionView
               distributions={distributions}
               warehousesList={warehouses}
@@ -1376,8 +1368,8 @@ export default function App() {
             />
           )}
 
-          {/* View Tab 5: Emergency Requests Module (Relief Coordinator) */}
-          {currentUser?.role !== 'Administrator' && activeTab === 'emergency' && (
+          {/* View Tab 5: Emergency Requests Module */}
+          {activeTab === 'emergency' && (
             <EmergencyRequestsView
               requests={emergencyRequests}
               warehousesList={warehouses}
@@ -1389,8 +1381,8 @@ export default function App() {
             />
           )}
 
-          {/* View Tab 6: Reports & Analytics Module (Relief Coordinator) */}
-          {currentUser?.role !== 'Administrator' && activeTab === 'reports' && (
+          {/* View Tab 6: Reports & Analytics Module */}
+          {activeTab === 'reports' && (
             <ReportsAnalytics
               inventoryItems={inventoryItems}
               warehouses={warehouses}

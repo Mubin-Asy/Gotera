@@ -1,4 +1,4 @@
-﻿/**
+/**
  * emergencyHandlers.js
  * Handlers for Gotera regional emergency food allocation requisitions
  * Aligned with 'MongoDB 8.0 in Action' (Arek Borucki)
@@ -16,20 +16,24 @@ exports.listRequests = async (req, res, next) => {
     const { urgency, status, search } = req.query;
 
     if (getIsConnected()) {
-      let query = {};
-      if (urgency && urgency !== 'All') query.urgency = urgency;
-      if (status && status !== 'All') query.status = status;
-      if (search) {
-        const safe = escapeRegex(search);
-        query.$or = [
-          { requestId: { $regex: safe, $options: 'i' } },
-          { authority: { $regex: safe, $options: 'i' } },
-          { region: { $regex: safe, $options: 'i' } },
-          { item: { $regex: safe, $options: 'i' } }
-        ];
+      try {
+        let query = {};
+        if (urgency && urgency !== 'All') query.urgency = urgency;
+        if (status && status !== 'All') query.status = status;
+        if (search) {
+          const safe = escapeRegex(search);
+          query.$or = [
+            { requestId: { $regex: safe, $options: 'i' } },
+            { authority: { $regex: safe, $options: 'i' } },
+            { region: { $regex: safe, $options: 'i' } },
+            { item: { $regex: safe, $options: 'i' } }
+          ];
+        }
+        const records = await EmergencyRequest.find(query).sort({ requestDate: -1 });
+        return res.status(200).json({ success: true, count: records.length, data: records });
+      } catch (mongoErr) {
+        console.warn('[Emergency Handler] Falling back to memory store:', mongoErr.message);
       }
-      const records = await EmergencyRequest.find(query).sort({ requestDate: -1 });
-      return res.status(200).json({ success: true, count: records.length, data: records });
     }
 
     let store = getMemoryStore().emergencyRequests || [];

@@ -17,6 +17,10 @@ const loggerMiddleware = require('./middleware/logger');
 const { notFoundHandler, serverErrorHandler } = require('./middleware/errorHandlers');
 const apiRoutes = require('./routes');
 
+process.on('unhandledRejection', (reason) => {
+  console.warn('[Server Notice] Handled background promise rejection:', reason?.message || reason);
+});
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 

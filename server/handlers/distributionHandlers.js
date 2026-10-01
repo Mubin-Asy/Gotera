@@ -1,4 +1,4 @@
-﻿/**
+/**
  * distributionHandlers.js
  * Handlers for Gotera relief food dispatches
  * Aligned with 'MongoDB 8.0 in Action' (Arek Borucki)
@@ -16,20 +16,24 @@ exports.listDistributions = async (req, res, next) => {
     const { status, warehouse, search } = req.query;
 
     if (getIsConnected()) {
-      let query = {};
-      if (status && status !== 'All') query.status = status;
-      if (warehouse && warehouse !== 'All') query.sourceWarehouse = warehouse;
-      if (search) {
-        const safe = escapeRegex(search);
-        query.$or = [
-          { distributionId: { $regex: safe, $options: 'i' } },
-          { item: { $regex: safe, $options: 'i' } },
-          { destination: { $regex: safe, $options: 'i' } },
-          { sourceWarehouse: { $regex: safe, $options: 'i' } }
-        ];
+      try {
+        let query = {};
+        if (status && status !== 'All') query.status = status;
+        if (warehouse && warehouse !== 'All') query.sourceWarehouse = warehouse;
+        if (search) {
+          const safe = escapeRegex(search);
+          query.$or = [
+            { distributionId: { $regex: safe, $options: 'i' } },
+            { item: { $regex: safe, $options: 'i' } },
+            { destination: { $regex: safe, $options: 'i' } },
+            { sourceWarehouse: { $regex: safe, $options: 'i' } }
+          ];
+        }
+        const records = await Distribution.find(query).sort({ dispatchDate: -1 });
+        return res.status(200).json({ success: true, count: records.length, data: records });
+      } catch (mongoErr) {
+        console.warn('[Distribution Handler] Falling back to memory store:', mongoErr.message);
       }
-      const records = await Distribution.find(query).sort({ dispatchDate: -1 });
-      return res.status(200).json({ success: true, count: records.length, data: records });
     }
 
     let store = getMemoryStore().distributions || [];

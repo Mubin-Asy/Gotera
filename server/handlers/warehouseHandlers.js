@@ -19,19 +19,23 @@ exports.listWarehouses = async (req, res, next) => {
     const { region, status, search } = req.query;
 
     if (getIsConnected()) {
-      let query = {};
-      if (region && region !== 'All') query.region = region;
-      if (status && status !== 'All') query.status = status;
-      if (search) {
-        const safeSearch = escapeRegex(search);
-        query.$or = [
-          { name: { $regex: safeSearch, $options: 'i' } },
-          { region: { $regex: safeSearch, $options: 'i' } },
-          { manager: { $regex: safeSearch, $options: 'i' } }
-        ];
+      try {
+        let query = {};
+        if (region && region !== 'All') query.region = region;
+        if (status && status !== 'All') query.status = status;
+        if (search) {
+          const safeSearch = escapeRegex(search);
+          query.$or = [
+            { name: { $regex: safeSearch, $options: 'i' } },
+            { region: { $regex: safeSearch, $options: 'i' } },
+            { manager: { $regex: safeSearch, $options: 'i' } }
+          ];
+        }
+        const warehouses = await Warehouse.find(query).sort({ name: 1 });
+        return res.status(200).json({ success: true, count: warehouses.length, data: warehouses });
+      } catch (mongoErr) {
+        console.warn('[Warehouse Handler] Falling back to memory store:', mongoErr.message);
       }
-      const warehouses = await Warehouse.find(query).sort({ name: 1 });
-      return res.status(200).json({ success: true, count: warehouses.length, data: warehouses });
     }
 
     let store = getMemoryStore().warehouses;

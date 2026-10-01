@@ -4,12 +4,11 @@
  * Header landmark with accessible search input and action controls
  */
 
-import { Search, LogOut } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 export default function Header({
   activeTab,
   currentUser,
-  onLogout,
   searchQuery,
   onSearchChange
 }) {
@@ -85,18 +84,6 @@ export default function Header({
             aria-label="Search reserve inventory and warehouses"
           />
         </div>
-
-        {/* Sign Out Button */}
-        <button
-          type="button"
-          className="btn btn-outline"
-          onClick={onLogout}
-          style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#c53030', borderColor: '#feb2b2' }}
-          title="Sign Out of GOTERA System"
-        >
-          <LogOut size={14} />
-          <span>Sign Out</span>
-        </button>
 
         {/* Profile Chip */}
         <div

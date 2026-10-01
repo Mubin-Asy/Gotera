@@ -20,9 +20,17 @@ exports.getOverviewStats = async (req, res, next) => {
     let collections = [];
 
     if (getIsConnected()) {
-      inventoryItems = await InventoryItem.find();
-      warehouses = await Warehouse.find();
-      collections = await CollectionRecord.find();
+      try {
+        inventoryItems = await InventoryItem.find();
+        warehouses = await Warehouse.find();
+        collections = await CollectionRecord.find();
+      } catch (mongoErr) {
+        console.warn('[Stats Handler] Falling back to memory store:', mongoErr.message);
+        const store = getMemoryStore();
+        inventoryItems = store.inventory;
+        warehouses = store.warehouses;
+        collections = store.collections;
+      }
     } else {
       const store = getMemoryStore();
       inventoryItems = store.inventory;

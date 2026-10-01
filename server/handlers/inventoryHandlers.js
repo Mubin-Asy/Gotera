@@ -19,20 +19,24 @@ exports.listItems = async (req, res, next) => {
     const { category, warehouse, search, status } = req.query;
 
     if (getIsConnected()) {
-      let query = {};
-      if (category && category !== 'All') query.category = category;
-      if (warehouse && warehouse !== 'All') query.warehouse = warehouse;
-      if (status && status !== 'All') query.status = status;
-      if (search) {
-        const safeSearch = escapeRegex(search);
-        query.$or = [
-          { name: { $regex: safeSearch, $options: 'i' } },
-          { subCategory: { $regex: safeSearch, $options: 'i' } },
-          { warehouse: { $regex: safeSearch, $options: 'i' } }
-        ];
+      try {
+        let query = {};
+        if (category && category !== 'All') query.category = category;
+        if (warehouse && warehouse !== 'All') query.warehouse = warehouse;
+        if (status && status !== 'All') query.status = status;
+        if (search) {
+          const safeSearch = escapeRegex(search);
+          query.$or = [
+            { name: { $regex: safeSearch, $options: 'i' } },
+            { subCategory: { $regex: safeSearch, $options: 'i' } },
+            { warehouse: { $regex: safeSearch, $options: 'i' } }
+          ];
+        }
+        const items = await InventoryItem.find(query).sort({ createdAt: -1 });
+        return res.status(200).json({ success: true, count: items.length, data: items });
+      } catch (mongoErr) {
+        console.warn('[Inventory Handler] Falling back to memory store:', mongoErr.message);
       }
-      const items = await InventoryItem.find(query).sort({ createdAt: -1 });
-      return res.status(200).json({ success: true, count: items.length, data: items });
     }
 
     // Memory fallback matching native MongoDB queries

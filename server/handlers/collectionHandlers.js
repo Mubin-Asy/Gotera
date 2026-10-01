@@ -20,20 +20,24 @@ exports.listCollections = async (req, res, next) => {
     const { status, warehouse, search } = req.query;
 
     if (getIsConnected()) {
-      let query = {};
-      if (status && status !== 'All') query.status = status;
-      if (warehouse && warehouse !== 'All') query.destinationWarehouse = warehouse;
-      if (search) {
-        const safeSearch = escapeRegex(search);
-        query.$or = [
-          { recordId: { $regex: safeSearch, $options: 'i' } },
-          { item: { $regex: safeSearch, $options: 'i' } },
-          { source: { $regex: safeSearch, $options: 'i' } },
-          { destinationWarehouse: { $regex: safeSearch, $options: 'i' } }
-        ];
+      try {
+        let query = {};
+        if (status && status !== 'All') query.status = status;
+        if (warehouse && warehouse !== 'All') query.destinationWarehouse = warehouse;
+        if (search) {
+          const safeSearch = escapeRegex(search);
+          query.$or = [
+            { recordId: { $regex: safeSearch, $options: 'i' } },
+            { item: { $regex: safeSearch, $options: 'i' } },
+            { source: { $regex: safeSearch, $options: 'i' } },
+            { destinationWarehouse: { $regex: safeSearch, $options: 'i' } }
+          ];
+        }
+        const records = await CollectionRecord.find(query).sort({ collectionDate: -1 });
+        return res.status(200).json({ success: true, count: records.length, data: records });
+      } catch (mongoErr) {
+        console.warn('[Collection Handler] Falling back to memory store:', mongoErr.message);
       }
-      const records = await CollectionRecord.find(query).sort({ collectionDate: -1 });
-      return res.status(200).json({ success: true, count: records.length, data: records });
     }
 
     let store = getMemoryStore().collections;
